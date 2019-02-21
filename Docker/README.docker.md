@@ -53,26 +53,34 @@ We'll be using the jupyter/tensorflow-notebook docker image. It comes with tenso
 
 `docker pull jupyter/tensorflow-notebook`
 
-After it pulls the image, run the following command to start the container. It will mount your ~/notebooks directory for use inside Jupyter Notebook - if you want to run notebooks from another folder, replace `~/notebooks` with the appropriate path.
+After it pulls the image, run the following command to start the container. It will mount your current directory for use inside Jupyter Notebook. Note that `/home/jovyan/work` is a directory defined by the docker container, inside the container; don't change that.
 
-`docker run -p 8888:8888 -v ~/notebooks:/home/${USER} jupyter/tensorflow-notebook`
+``docker run -it -v `pwd`:/home/jovyan/work -p 8888:8888 jupyter/tensorflow-notebook``
+
+If you want to mount a different directory, replace `` `pwd` `` (remove the backticks) with the appropriate path. For example, the following would mount /home/garret/notebooks. Use an absolute path, not a relative path:
+
+``docker run -it -v /home/garret/notebooks:/home/jovyan/work -p 8888:8888 jupyter/tensorflow-notebook``.
+
+If you find yourself unable to save notebooks when Jupyter starts, make sure that you have the appropriate directory permissions.
 
 # 3. Cloud ML with Docker
 TODO. This section should describe how to take a container and set it up to run on AWS Sagemaker or Google Cloud Platform ML (aka GCP ML). 
 
 ## 3.1 Brainstorming
 Some of the details of this need to be worked out as a team.
+- Best path for porting expirement code to the cloud:
+  - If sample code is written to run in a container, we could probably just extend that container and add the relevant commands to import data in from bucket storage, store model when job finishes, etc.
 - Do we want to cloud-host inference-making as well?
   - Sagemaker has Endpoints, GCP has something similar. These let you place a model in object storage, and then exposes a REST interface for requesting inferences.
 - Is there a preference for platforms? 
 - Cost:
-  - GCP's $300 credit is great for learning how to do ML
+  - GCP's $300 credit is great for learning how to do ML.
   - Paperspace has a referral program, ie if you use [my referral code](https://www.paperspace.com/&R=2RCPUXR) you get $10, I get $15 later if you stay with the platform. Their [jobs API](https://support.paperspace.com/hc/en-us/articles/360003415434-Containers-Public-Private) is useful for deploying docker training tasks.
-
-
 
 
 # 4. References
 These resources may be useful.
-- https://www.dataquest.io/blog/docker-data-science/
-  - Considerations for using docker containers with Jupyter.
+- [A gallery of interesting Jupyter Notebooks](https://github.com/jupyter/jupyter/wiki/A-gallery-of-interesting-Jupyter-Notebooks). 
+  - Many links, [Introductory Tutorials](https://github.com/jupyter/jupyter/wiki/A-gallery-of-interesting-Jupyter-Notebooks#introductory-tutorials) may be useful if you're new to Jupyter.
+- [Using docker containers with Jupyter](https://www.dataquest.io/blog/docker-data-science/)
+- [Training a CNN on GCP Cloud TPUs](https://medium.com/tensorflow/training-and-serving-a-realtime-mobile-object-detector-in-30-minutes-with-cloud-tpus-b78971cf1193), has an example Dockerfile, also covers GCP setup.
