@@ -208,3 +208,5 @@ fabric.properties
 # End of https://www.gitignore.io/api/pycharm
 
 # End of https://www.gitignore.io/api/python
+
+\.idea/
