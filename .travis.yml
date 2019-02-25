@@ -10,10 +10,10 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create -f envs/env.yml
+  - conda env create -f envs/test_env.yml
 # command to run tests
 script:
   - cd envs
-  - source activate.sh
+  - source test.sh
   - cd ..
   - python -m pytest
