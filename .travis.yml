@@ -1,6 +1,5 @@
 language: python
 python:
-  - "3.5"
   - "3.6"
 # command to install dependencies
 install:
@@ -12,9 +11,9 @@ install:
   - conda update -q conda
   - conda info -a
   - conda env create -f envs/env.yml
+# command to run tests
+script:
   - cd envs
   - source activate.sh
   - cd ..
-# command to run tests
-script:
   - pytest
