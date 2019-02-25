@@ -16,4 +16,4 @@ script:
   - cd envs
   - source activate.sh
   - cd ..
-  - pytest
+  - python -m pytest
