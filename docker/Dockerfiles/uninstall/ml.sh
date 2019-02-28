@@ -1,2 +1,2 @@
-docker rmi astro-classify astro-classify
+docker rmi astro-classify
 
