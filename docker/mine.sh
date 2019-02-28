@@ -3,7 +3,7 @@ echo -e "\e[96mDocker tag not found. Building docker image..."
 echo -e "\e[39m"
 cd Dockerfiles/install
 ./install_mine.sh
-cd ..
+cd ../..
 echo -e "\e[96mDocker image finished building."
 echo -e "\e[39m"
 fi
