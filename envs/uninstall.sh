@@ -1,4 +1,4 @@
-conda remove --name astro-classify-mine --all
-conda remove --name astro-classify --all
-conda remove --name astro-classify-test --all
+conda remove -y --name astro-classify-mine --all
+conda remove -y --name astro-classify --all
+conda remove -y --name astro-classify-test --all
 
