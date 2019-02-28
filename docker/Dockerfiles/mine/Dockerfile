@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=continuumio/miniconda
+ARG BASE_CONTAINER=continuumio/miniconda3
 FROM $BASE_CONTAINER
 
 LABEL maintainer="continuumio"
