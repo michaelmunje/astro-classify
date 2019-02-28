@@ -1,0 +1,1 @@
+from astroclassify import data
