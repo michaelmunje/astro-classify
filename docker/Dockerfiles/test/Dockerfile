@@ -6,8 +6,8 @@ LABEL maintainer="continuumio"
 RUN conda install --quiet --yes \
     'numpy' \
     'pandas' \
-    'tensorflow=1.12*' \
+    'tensorflow' \
     'pytest' \
-    'keras=2.2*' && \
+    'keras' && \
     conda clean -tipsy
 
