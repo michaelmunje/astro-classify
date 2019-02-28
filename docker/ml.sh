@@ -9,5 +9,4 @@ echo -e "\e[39m"
 fi
 echo -e "\e[96mRunning astro-classify container..."
 echo -e "\e[39m"
-docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/astro-classify:rw -u `id -u $USER`:`id -g $USER` astro-classify
-
+docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/home/jovyan/:rw -u `id -u $USER`:`id -g $USER` astro-classify start.sh bash -c "rm -rf /home/joyvan/work;jupyter lab"
