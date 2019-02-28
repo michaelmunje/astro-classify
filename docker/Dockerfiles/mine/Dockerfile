@@ -8,3 +8,5 @@ RUN conda install --quiet --yes \
     'pandas' \
     'selenium' && \
     conda clean -tipsy
+
+CMD bash -c 'cd astro-classify;bash'
