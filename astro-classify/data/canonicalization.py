@@ -1,11 +1,8 @@
 from os import listdir
 import sys
 
-if len(sys.argv) == 1 or len(sys.argv) > 3:
-    print('Expects an argument of the folder containing the data files')
-    print('Can also take a second optional parameter of where the master file should be created')
-else:
-    path = sys.argv[1]
+def canonicalize(data_folder_path, output_path = ''):
+    path = data_folder_path
     files = listdir(path)
     values = set()
 
@@ -15,10 +12,17 @@ else:
             if line.strip().strip('\n') != '':
                 value = line.strip('\n')
                 values.add(value)
-    outputFile = 'Master.txt'
-    if(len(sys.argv) == 3):
-        outputFile = sys.argv[2] + '\\' + outputFile
-    writeFile = open(outputFile, 'w')
+    output_file = 'Master.txt'
+    if output_path != '':
+        output_file = output_path + '\\' + output_file
+    write_file = open(output_file, 'w')
     for value in values:
-        writeFile.write(value + '\n')
-    print('New file created, ' + outputFile)
+        write_file.write(value + '\n')
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        canonicalize(sys.argv[1])
+    elif len(sys.argv) == 3:
+        canonicalize(sys.argv[1], sys.argv[2])
+    else:
+        raise ValueError('Expects an argument of the folder containing the data files')
