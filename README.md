@@ -9,7 +9,7 @@ Galana: **Gal**actic **Ana**lyzer is an open-source tool for applying machine le
 Documentation
 -------------
 
-The documentation for ``galana`` is available [here](https://readthedocs.org/dashboard/galana/)
+The documentation for ``galana`` is available [here](https://galana.readthedocs.io/en/latest/?)
 
 Installation & Dependencies
 ---------------------------
