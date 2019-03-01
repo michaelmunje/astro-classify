@@ -17,3 +17,5 @@ script:
   - source test.sh
   - cd ..
   - python -m pytest -W ignore::DeprecationWarning
+after_success:
+  - coveralls
