@@ -1,23 +1,22 @@
-# import canonicalization
+import astroclassify as ac
 import os
-import sys
+import filecmp
+import pytest
 
-'''
-def test_canonical():
-    directory = os.path.dirname(sys.argv[0])
-    canonicalization.canonicalize(os.path.join(directory, 'canonical-test-data'), directory)
-    master_path = os.path.join(directory, 'Master.txt')
-    master_file = open(master_path, 'r')
-    i = 1
-    match = 0
-    for line in master_file:
-        if line == i:
-            i += 1
-            match += 1
-    assert match == len(master_file)
-    os.remove(master_path
+
+def test_merging():
+    root_dir = os.getcwd()
+    input_dir = os.path.join('tests', 'pipeline', 'test_input', 'merge')
+    output_dir = os.path.join('tests', 'pipeline', 'test_output', 'merge')
+
+    foldername = os.path.join(os.sep, root_dir, input_dir, 'to_merge')
+    expected_filepath = os.path.join(os.sep, root_dir, input_dir, 'expected', 'merge_4.txt')
+    output_filepath = os.path.join(os.sep, root_dir, output_dir, 'merge_4.txt')
+
+    ac.pipeline.merge(foldername, output_filepath)
+
+    assert(filecmp.cmp(expected_filepath, output_filepath, shallow=False) is True)
 
 
 if __name__ == '__main__':
-    test_canonical()
-'''
+    pytest.main([__file__])
