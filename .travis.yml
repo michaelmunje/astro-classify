@@ -18,6 +18,10 @@ script:
   - cd ..
   - pip install pytest-cov
   - pip install coveralls
+  - pip install sphinx
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
+  - cd docs
+  - make html
+  - cd ..
 after_success:
   - coveralls
