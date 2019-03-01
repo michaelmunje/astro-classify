@@ -16,4 +16,4 @@ script:
   - cd envs
   - source test.sh
   - cd ..
-  - python -m pytest
+  - python -m pytest -W ignore::DeprecationWarning
