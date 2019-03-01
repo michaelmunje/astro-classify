@@ -1,1 +1,1 @@
-from astroclassify import data
+from astroclassify import pipeline
