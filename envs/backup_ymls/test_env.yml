@@ -47,6 +47,7 @@ dependencies:
   - setuptools=40.8.0=py36_0
   - six=1.12.0=py36_0
   - sqlite=3.26.0=h7b6447c_0
+  - sphinx
   - tensorboard=1.12.2=py36he6710b0_0
   - tensorflow=1.12.0=mkl_py36h69b6ba0_0
   - tensorflow-base=1.12.0=mkl_py36h3c3e929_0
