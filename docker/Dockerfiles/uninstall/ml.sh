@@ -1,0 +1,2 @@
+docker rmi astro-classify
+
