@@ -16,4 +16,8 @@ script:
   - cd envs
   - source test.sh
   - cd ..
-  - python -m pytest -W ignore::DeprecationWarning
+  - pip install pytest-cov
+  - pip install coveralls
+  - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
+after_success:
+  - coveralls

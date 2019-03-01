@@ -20,7 +20,3 @@ def extract_galaxy_names(filename):
     df = pd.DataFrame(galaxy_names, columns=['names'])
 
     return df
-
-
-if __name__ == "__main__":
-    print("")  # TODO: Add command line arguments

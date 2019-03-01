@@ -17,10 +17,3 @@ def merge(data_folder_path, output_filepath):
     write_file = open(output_filepath, 'w')
     for value in values:
         write_file.write(value + '\n')
-
-
-if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        merge(sys.argv[1], sys.argv[2])
-    else:
-        raise ValueError('Expects a data folder path and output file path.')
