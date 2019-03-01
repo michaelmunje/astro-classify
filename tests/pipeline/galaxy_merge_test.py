@@ -10,8 +10,8 @@ def test_merging():
     output_dir = os.path.join('tests', 'pipeline', 'test_output', 'merge')
 
     foldername = os.path.join(os.sep, root_dir, input_dir, 'to_merge')
-    expected_filepath = os.path.join(os.sep, root_dir, input_dir, 'expected', 'merge_4.txt')
-    output_filepath = os.path.join(os.sep, root_dir, output_dir, 'merge_4.txt')
+    expected_filepath = os.path.join(os.sep, root_dir, input_dir, 'expected', 'expected_output.txt')
+    output_filepath = os.path.join(os.sep, root_dir, output_dir, 'output.txt')
 
     ac.pipeline.merge(foldername, output_filepath)
 
