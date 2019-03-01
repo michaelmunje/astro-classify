@@ -18,6 +18,6 @@ script:
   - cd ..
   - pip install pytest-cov
   - pip install coveralls
-  - python -m pytest --cov -W ignore::DeprecationWarning
+  - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
 after_success:
   - coveralls
