@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=continuumio/miniconda
+ARG BASE_CONTAINER=continuumio/miniconda3
 FROM $BASE_CONTAINER
 
 LABEL maintainer="continuumio"
@@ -6,5 +6,8 @@ LABEL maintainer="continuumio"
 RUN conda install --quiet --yes \
     'numpy' \
     'pandas' \
-    'selenium' && \
+    'tensorflow' \
+    'pytest' \
+    'keras' && \
     conda clean -tipsy
+
