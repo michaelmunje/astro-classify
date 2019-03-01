@@ -1,1 +1,0 @@
-from astroclassify import pipeline
