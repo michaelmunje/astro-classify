@@ -1,10 +1,13 @@
 import pytest
 import astroclassify as ac
+import os
 
 
 def test_galaxy_name_extraction():
-    filename = "tests/test_cases/RAW_NASA_DATABASE_TABLE"
-    df = ac.data.extract_galaxy_names(filename)
+    root_dir = os.getcwd()
+    input_dir = os.path.join('tests', 'pipeline', 'test_input', 'galaxy_name_extraction')
+    filename = os.path.join(os.sep, root_dir, input_dir, 'RAW_NASA_DATABASE_TABLE')
+    df = ac.pipeline.extract_galaxy_names(filename)
     print(df['names'])
     assert(len(df['names']) == 3)
     if (len(df['names']) == 3):
