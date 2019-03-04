@@ -10,4 +10,4 @@ echo -e "\e[39m"
 fi
 echo -e "\e[96mRunning galana container..."
 echo -e "\e[39m"
-docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/home/jovyan/:rw -v $(dirname $(dirname "$(pwd)"))/certs:/etc/certs/ -u `id -u $USER`:`id -g $USER` galana start.sh bash -c "rm -rf /home/joyvan/work;start-notebook.sh --NotebookApp.keyfile=/etc/certs/notebook.key --NotebookApp.certfile=/etc/certs/notebook.crt"
+docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/home/jovyan/:rw -v $(dirname $(dirname "$(pwd)"))/certs:/etc/certs/ -u `id -u $USER`:`id -g $USER` galana start.sh bash -c "rm -rf /home/joyvan/work;jupyter lab --NotebookApp.keyfile=/etc/certs/notebook.key --NotebookApp.certfile=/etc/certs/notebook.crt"
