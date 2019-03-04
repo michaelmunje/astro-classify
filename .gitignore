@@ -224,4 +224,6 @@ fabric.properties
 #   git rm -r .ipynb_checkpoints/
 #
 
+\.jupyter/
+
 # End of https://www.gitignore.io/api/jupyternotebook
