@@ -1,1 +1,1 @@
-docker build . -t astro-classify-mine -f ../mine/Dockerfile
+docker build . -t galana-mine -f ../mine/Dockerfile
