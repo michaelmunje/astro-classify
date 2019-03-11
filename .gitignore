@@ -227,3 +227,5 @@ fabric.properties
 \.jupyter/
 
 # End of https://www.gitignore.io/api/jupyternotebook
+
+\.keras/keras\.json
