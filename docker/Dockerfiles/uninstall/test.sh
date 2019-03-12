@@ -1,1 +1,1 @@
-docker rmi astro-classify-test
+docker rmi galana-test
