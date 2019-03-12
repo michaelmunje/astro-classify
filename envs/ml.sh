@@ -1,1 +1,1 @@
-source activate astro-classify
+source activate galana
