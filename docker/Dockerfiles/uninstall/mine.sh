@@ -1,1 +1,1 @@
-docker rmi astro-classify-mine
+docker rmi galana-mine
