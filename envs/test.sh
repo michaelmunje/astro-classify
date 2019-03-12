@@ -1,1 +1,1 @@
-source activate astro-classify-test
+source activate galana-test
