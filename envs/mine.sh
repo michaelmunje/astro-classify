@@ -1,1 +1,1 @@
-source activate astro-classify-mine
+source activate galana-mine
