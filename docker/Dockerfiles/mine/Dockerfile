@@ -9,4 +9,4 @@ RUN conda install --quiet --yes \
     'selenium' && \
     conda clean -tipsy
 
-CMD bash -c 'cd astro-classify;bash'
+CMD bash -c 'cd galana;bash'
