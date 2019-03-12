@@ -1,4 +1,4 @@
-name: astro-classify-test
+name: galana-test
 channels:
   - defaults
 dependencies:
@@ -57,5 +57,5 @@ dependencies:
   - wheel=0.32.3=py36_0
   - xz=5.2.4=h14c3975_4
   - zlib=1.2.11=h7b6447c_3
-prefix: /opt/anaconda/envs/astro-classify-test
+prefix: /opt/anaconda/envs/galana-test
 
