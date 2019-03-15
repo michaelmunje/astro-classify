@@ -1,3 +1,4 @@
+#!/bin/bash
 if [[ "$(docker images -q galana 2> /dev/null)" == "" ]]; then
 echo -e "\e[96mDocker tag not found. Building docker image..."
 echo -e "\e[39m"
