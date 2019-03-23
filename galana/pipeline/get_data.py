@@ -25,7 +25,7 @@ def extract_galaxy_names(filename):
     return df
 
 def retreive_tables(filepath):
-    g_names = list(extract_galaxy_names(file_name)['names'])
+    g_names = list(extract_galaxy_names(file_path)['names'])
     result_tables = [Ned.query_object(g).to_pandas() for g in g_names]
     df_tables = pd.concat(result_tables, sort=False)
     df_tables = df_tables.dropna(axis=1)
