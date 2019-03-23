@@ -1,6 +1,7 @@
 import pickle
 import os
 import sys
+import mine
 
 
 root_dir = os.getcwd()
@@ -64,7 +65,7 @@ def final_phase():
 
 
 def get_all_mining_data():
-    print("Code goes here...")
+    print(mine.get_all_tables())
 
 
 if __name__ == '__main__':
