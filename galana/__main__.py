@@ -1,5 +1,6 @@
 import pickle
 import os
+import sys
 
 
 root_dir = os.getcwd()
@@ -62,21 +63,27 @@ def final_phase():
     print("You have finished running the data pipeline. Results are available at: data/results/")
 
 
-if __name__ == '__main__':
-    progress = load_progress()
-    if progress is None:
-        phase_one_data_retrieval()
-    else:
-        num = progress['Progress']
-        switcher = {
-            1: phase_one_data_retrieval,
-            2: phase_two_data_cleaning,
-            3: phase_three_further_data,
-            4: phase_four_logs,
-            5: phase_five_get_sdfs,
-            6: phase_six_get_descriptors,
-            7: final_phase
-        }
+def get_all_mining_data():
+    print("Code goes here...")
 
-        current_phase = switcher.get(num, lambda: "Corrupt pickle.")
-        current_phase()
+
+if __name__ == '__main__':
+    if ' '.join(sys.argv[1:]) == "Get All Mining Data":
+        get_all_mining_data()
+    # progress = load_progress()
+    # if progress is None:
+    #     phase_one_data_retrieval()
+    # else:
+    #     num = progress['Progress']
+    #     switcher = {
+    #         1: phase_one_data_retrieval,
+    #         2: phase_two_data_cleaning,
+    #         3: phase_three_further_data,
+    #         4: phase_four_logs,
+    #         5: phase_five_get_sdfs,
+    #         6: phase_six_get_descriptors,
+    #         7: final_phase
+    #     }
+    #
+    #     current_phase = switcher.get(num, lambda: "Corrupt pickle.")
+    #     current_phase()
