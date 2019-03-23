@@ -7,6 +7,7 @@ RUN conda install --quiet --yes \
     'numpy' \
     'pandas' \
     'selenium' && \
+    conda install openjdk && \
     conda clean -tipsy
 
 CMD bash -c 'cd galana;bash'
