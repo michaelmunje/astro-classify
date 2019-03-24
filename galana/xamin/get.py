@@ -10,6 +10,11 @@ pl.Path(abs_raw_data_path).mkdir(parents=True, exist_ok=True)
 
 
 def query_to_txt(filepath, command):
+    """
+    Writes query result to text file specified in filepath
+    :param filepath: Where to write the query result
+    :param command: Query command as a full bash command
+    """
     output = ""
     try:
         output = get_inline_script_output(command)
