@@ -10,11 +10,17 @@ pl.Path(abs_raw_data_path).mkdir(parents=True, exist_ok=True)
 
 
 def query_to_txt(filepath, command):
+    output = ""
     try:
+        output = get_inline_script_output(command)
         with open(filepath, "w") as text_file:
-            text_file.write(get_inline_script_output(command))
+            text_file.write(output)
     except:
         print("Failed getting data for " + '.'.split(('/'.split(filepath)[-1]))[0] + ". Trying again...")
+        query_to_txt(filepath, command)
+    if len(output) == 0:
+        print("Error in data retrieval. Attempting again...")
+        print("File to save to: " + filepath)
         query_to_txt(filepath, command)
 
 
@@ -26,3 +32,4 @@ def run_table_query(table_name):
               + '/' + table_name + ".txt'"
     filepath = abs_raw_data_path + '/' + table_name + ".txt"
     query_to_txt(filepath, command)
+    print("Finished query for " + table_name)
