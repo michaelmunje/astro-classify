@@ -17,7 +17,7 @@ def test_get_all_tables():
                 'tartarus', 'twodfqsoz', 'twomassrsc', 'ugc', 'ulxrbcat', 'uvqs', 'uzc', 'veroncat', 'w2ragncat',
                 'warps', 'warps2', 'wbl', 'wblgalaxy', 'wisehspcat', 'xmmcty2agn', 'xrayselbll', 'xshzagncxo',
                 'zcat', 'zwclusters']
-    assert(ga.data.get_all_tables_names() == expected)
+    assert(ga.xamin.get_all_names() == expected)
 
 
 if __name__ == '__main__':
