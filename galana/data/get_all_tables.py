@@ -1,7 +1,7 @@
 import os
 from multiprocessing import Pool
-from ..data import get_all_tables_names
-from ..data import run_table_query
+from data import get_all_tables_names
+from data import run_table_query
 
 
 def get_all_tables():
