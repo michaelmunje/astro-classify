@@ -1,10 +1,12 @@
 import os
 from .helpers import get_inline_script_output
+import pathlib as pl
 
 
 root_dir = os.getcwd()
 raw_data_dir = root_dir + '/data/mine/raw'
 abs_raw_data_path = os.path.abspath(raw_data_dir)
+pl.Path(abs_raw_data_path).mkdir(parents=True, exist_ok=True)
 
 
 def query_to_txt(filepath, command):
