@@ -10,6 +10,6 @@ echo -e "\e[39m"
 fi
 echo -e "\e[96mRunning galana-test container..."
 echo -e "\e[39m"
-docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/galana:rw -u `id -u $USER`:`id -g $USER` galana-test bash -c "cd galana; python -m pytest -W ignore::DeprecationWarning"
+docker run -ti --rm --net=host -v $(dirname "$(pwd)"):/galana:rw -u `id -u $USER`:`id -g $USER` galana-test bash -c "cd galana; python -m pytest --cov=galana/ -W ignore::DeprecationWarning"
 
 

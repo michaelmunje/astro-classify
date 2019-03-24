@@ -8,6 +8,8 @@ RUN conda install --quiet --yes \
     'pandas' \
     'tensorflow' \
     'pytest' \
+    'pytest-cov' \
     'keras' && \
-    conda clean -tipsy
+    conda clean -tipsy && \
+    pip install pytest-cov
 
