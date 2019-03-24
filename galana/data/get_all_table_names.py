@@ -1,5 +1,5 @@
 import os
-from helpers import get_script_output
+from ..helpers import get_script_output
 
 
 root_dir = os.getcwd()

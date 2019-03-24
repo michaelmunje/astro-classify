@@ -1,7 +1,7 @@
 import os
 from multiprocessing import Pool
-from data import get_all_tables_names
-from helpers import get_inline_script_output
+from ..data import get_all_tables_names
+from ..helpers import get_inline_script_output
 
 root_dir = os.getcwd()
 raw_data_dir = root_dir + '/data/mine/raw'
