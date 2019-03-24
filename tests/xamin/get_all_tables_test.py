@@ -3,6 +3,7 @@ import galana as ga
 
 
 def test_get_all_tables():
+    ga.xamin.install()
     expected = ['a2pic', 'abell', 'abellzcat', 'acceptcat', 'agnsdssxm2', 'agnsdssxmm', 'allwiseagn',
                 'arxa', 'ascaegclus', 'asiagosn', 'baxgalclus', 'cbatpicagn', 'ccosrssfag', 'cfa2s',
                 'cgmw', 'cosmosvlba', 'cosxfirmwc', 'denisigal', 'eingalcat', 'eingalclus', 'esouppsala',
