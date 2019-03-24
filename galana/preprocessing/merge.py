@@ -1,5 +1,4 @@
 import os
-import sys
 
 
 def merge(data_folder_path, output_filepath):
