@@ -231,3 +231,5 @@ fabric.properties
 \.keras/keras\.json
 
 utils/xamin\.jar
+
+data/mine/raw/
