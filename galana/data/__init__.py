@@ -1,1 +1,2 @@
-from .get_all_table_names import get_all_tables
+from .get_all_table_names import get_all_tables_names
+from .get_all_tables import get_all_tables as get_all_raw
