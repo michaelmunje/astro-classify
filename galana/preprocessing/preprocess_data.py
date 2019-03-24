@@ -1,4 +1,4 @@
-from pipeline import extract_data
+from .extract_data import extract_data
 import os
 
 root_dir = os.getcwd()
