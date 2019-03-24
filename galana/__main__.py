@@ -1,7 +1,7 @@
 import pickle
 import os
 import sys
-import data
+import xamin
 
 
 root_dir = os.getcwd()
@@ -26,7 +26,7 @@ def save_progress(phase_num):
 
 def phase_one_data_retrieval():
     print("Retrieving all data...")
-    data.get_all_raw()
+    xamin.get_all_raw()
     save_progress(2)
     phase_two_data_cleaning()
 
@@ -60,7 +60,7 @@ def final_phase():
 
 
 def get_all_mining_data():
-    data.get_all_raw()
+    xamin.get_all_raw()
 
 
 if __name__ == '__main__':

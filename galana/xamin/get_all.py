@@ -1,12 +1,12 @@
 import os
 from multiprocessing import Pool
-from data import get_all_tables_names
-from data import run_table_query
+from .get import run_table_query
+from .get_all_names import get_all_names
 
 
 def get_all_tables():
-    print("Retrieving all table names...")
-    table_names = get_all_tables_names()
+    print("Retrieving all database names...")
+    table_names = get_all_names()
     print(table_names)
     os.chdir('utils')
     print("Running all table queries....")
