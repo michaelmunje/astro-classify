@@ -13,7 +13,7 @@ def test_merging():
     expected_filepath = os.path.join(os.sep, root_dir, input_dir, 'expected', 'expected_output.txt')
     output_filepath = os.path.join(os.sep, root_dir, output_dir, 'output.txt')
 
-    ga.pipeline.merge(foldername, output_filepath)
+    ga.preprocessing.merge(foldername, output_filepath)
 
     assert(filecmp.cmp(expected_filepath, output_filepath, shallow=False) is True)
 
