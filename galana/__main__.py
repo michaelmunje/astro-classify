@@ -60,6 +60,7 @@ def final_phase():
 
 
 def get_all_mining_data():
+    xamin.install()
     xamin.get_all_raw()
 
 
