@@ -1,0 +1,2 @@
+[run]
+omit = galana/__main__.py
