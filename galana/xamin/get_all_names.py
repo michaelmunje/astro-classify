@@ -18,5 +18,6 @@ def get_all_names():
         os.chdir('..')
         return get_all_names()
     if len(clean_list) == 0:
+        print("Error in data retrieval. Attempting again...")
         return get_all_names()
     return clean_list
