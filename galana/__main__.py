@@ -7,7 +7,6 @@ import data
 root_dir = os.getcwd()
 data_dir = os.path.abspath(root_dir + "/data/")
 pickle_path = data_dir + "/prog.pickle"
-bash_script_loc = root_dir + "/utils/"
 
 
 def load_progress():
@@ -26,7 +25,8 @@ def save_progress(phase_num):
 
 
 def phase_one_data_retrieval():
-
+    print("Retrieving all data...")
+    data.get_all_raw()
     save_progress(2)
     phase_two_data_cleaning()
 
@@ -52,12 +52,7 @@ def phase_four_logs():
 def phase_five_get_sdfs():
 
     save_progress(6)
-    phase_six_get_descriptors()
-
-
-def phase_six_get_descriptors():
-
-    save_progress(7)
+    final_phase()
 
 
 def final_phase():
@@ -71,20 +66,20 @@ def get_all_mining_data():
 if __name__ == '__main__':
     if ' '.join(sys.argv[1:]) == "Get All Mining Data":
         get_all_mining_data()
-    # progress = load_progress()
-    # if progress is None:
-    #     phase_one_data_retrieval()
-    # else:
-    #     num = progress['Progress']
-    #     switcher = {
-    #         1: phase_one_data_retrieval,
-    #         2: phase_two_data_cleaning,
-    #         3: phase_three_further_data,
-    #         4: phase_four_logs,
-    #         5: phase_five_get_sdfs,
-    #         6: phase_six_get_descriptors,
-    #         7: final_phase
-    #     }
-    #
-    #     current_phase = switcher.get(num, lambda: "Corrupt pickle.")
-    #     current_phase()
+    else:
+        progress = load_progress()
+        if progress is None:
+            phase_one_data_retrieval()
+        else:
+            num = progress['Progress']
+            switcher = {
+                1: phase_one_data_retrieval,
+                2: phase_two_data_cleaning,
+                3: phase_three_further_data,
+                4: phase_four_logs,
+                5: phase_five_get_sdfs,
+                7: final_phase
+            }
+
+            current_phase = switcher.get(num, lambda: "Corrupt pickle.")
+            current_phase()
