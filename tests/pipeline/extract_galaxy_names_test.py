@@ -10,7 +10,7 @@ def test_galaxy_name_extraction():
     df = ga.pipeline.extract_galaxy_names(filename)
     print(df['names'])
     assert(len(df['names']) == 3)
-    if (len(df['names']) == 3):
+    if len(df['names']) == 3:
         assert(df['names'][0] == "SOME GALAXY")
         assert(df['names'][1] == "ANOTHER GALAXY")
         assert(df['names'][2] == "LAST ONE")
