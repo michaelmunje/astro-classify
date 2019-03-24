@@ -3,7 +3,7 @@
 import pandas as pd
 import os
 from astroquery.ned import Ned 
-from .extract_galaxies import extract_galaxy_names
+from .extract_data import extract_galaxy_names
 
 
 def retreive_tables(filepath):
