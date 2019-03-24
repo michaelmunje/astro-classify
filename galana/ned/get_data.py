@@ -1,12 +1,10 @@
 import pandas as pd
 import os
-from astroquery.ned import Ned 
-from .extract_data import extract_galaxy_names
+from astroquery.ned import Ned
 
 
-def retrieve_tables(filepath):
-    g_names = list(extract_galaxy_names(filepath)['names'])
-    result_tables = [Ned.query_object(g).to_pandas() for g in g_names]
+def retrieve_tables(filepath, galaxy_names):
+    result_tables = [Ned.query_object(g).to_pandas() for g in galaxy_names]
     df_tables = pd.concat(result_tables, sort=False)
     df_tables = df_tables.dropna(axis=1)
     df_tables.head()
