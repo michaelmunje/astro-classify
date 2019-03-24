@@ -65,7 +65,7 @@ def final_phase():
 
 
 def get_all_mining_data():
-    print(data.get_all_tables())
+    data.get_all_raw()
 
 
 if __name__ == '__main__':
