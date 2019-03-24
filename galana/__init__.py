@@ -1,3 +1,3 @@
 from galana import preprocessing
-from galana import kaggle
+from galana import models
 from galana import xamin
