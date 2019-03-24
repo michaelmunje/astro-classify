@@ -10,6 +10,7 @@ RUN conda install --quiet --yes \
     'pytest' \
     'pytest-cov' \
     'keras' && \
+    conda install openjdk && \
     conda clean -tipsy && \
     pip install pytest-cov
 
