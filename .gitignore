@@ -229,3 +229,15 @@ fabric.properties
 # End of https://www.gitignore.io/api/jupyternotebook
 
 \.keras/keras\.json
+
+utils/xamin\.jar
+
+data/mine/raw/
+
+docker/Dockerfiles/current_installs/machine-learning/Dockerfile
+
+docker/Dockerfiles/current_installs/mine/Dockerfile
+
+docker/Dockerfiles/current_installs/test/Dockerfile
+
+tests/preprocessing/output

@@ -19,6 +19,7 @@ script:
   - pip install pytest-cov
   - pip install coveralls
   - pip install sphinx
+  - pip install astroquery
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
   - cd docs
   - make html
