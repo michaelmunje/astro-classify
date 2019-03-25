@@ -8,6 +8,7 @@ RUN conda install --quiet --yes \
     'pandas' \
     'selenium' && \
     conda install openjdk && \
-    conda clean -tipsy
+    conda clean -tipsy && \
+    pip install astroquery
 
 CMD bash -c 'cd galana;bash'
