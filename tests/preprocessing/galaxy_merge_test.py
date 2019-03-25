@@ -6,14 +6,14 @@ import pytest
 
 def test_merging():
     root_dir = os.getcwd()
-    input_dir = os.path.join('tests', 'preprocessing', 'test_input', 'merge')
-    output_dir = os.path.join('tests', 'preprocessing', 'test_output', 'merge')
+    input_dir = os.path.join('tests', 'preprocessing', 'input', 'merge')
+    output_dir = os.path.join('tests', 'preprocessing', 'output', 'merge')
+    expected_dir = os.path.join('tests', 'preprocessing', 'output', 'merge')
 
-    foldername = os.path.join(os.sep, root_dir, input_dir, 'to_merge')
-    expected_filepath = os.path.join(os.sep, root_dir, input_dir, 'expected', 'expected_output.txt')
+    expected_filepath = os.path.join(os.sep, root_dir, expected_dir, 'output.txt')
     output_filepath = os.path.join(os.sep, root_dir, output_dir, 'output.txt')
 
-    preprocessing.merge(foldername, output_filepath)
+    preprocessing.merge(input_dir, output_filepath)
 
     assert(filecmp.cmp(expected_filepath, output_filepath, shallow=False) is True)
 
