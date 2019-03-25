@@ -1,0 +1,6 @@
+[run]
+omit = 
+    galana/__main__.py
+    galana/xamin/get_all.py
+    galana/xamin/get_all_names.py
+    galana/xamin/get.py
