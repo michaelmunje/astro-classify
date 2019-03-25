@@ -1,7 +1,9 @@
 import os
+import pathlib as pl
 
 
 def merge(data_folder_path, output_filepath):
+    pl.Path(os.path.dirname(output_filepath)).mkdir(parents=True, exist_ok=True)
     files = os.listdir(data_folder_path)
     values = list()
 
