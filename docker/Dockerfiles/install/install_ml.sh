@@ -1,3 +1,3 @@
 #!/bin/bash
-docker build . -t galana -f ../machine-learning/Dockerfile
+docker build . -t galana-ml -f ../machine-learning/Dockerfile
 

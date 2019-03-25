@@ -1,3 +1,3 @@
 #!/bin/bash
-docker rmi galana
+docker rmi galana-ml
 

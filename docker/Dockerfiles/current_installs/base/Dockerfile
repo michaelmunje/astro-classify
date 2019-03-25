@@ -13,7 +13,6 @@ RUN conda install --quiet --yes \
     conda install openjdk && \
     conda clean -tipsy && \
     pip install pytest-cov && \
-    pip install pytest-timeout && \
     conda install -c astropy astroquery && \
     mkdir .astropy && \
     chmod 667 .astropy
