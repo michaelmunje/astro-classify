@@ -1,17 +1,15 @@
 import pandas as pd
-import os
 from astroquery.ned import Ned
 
 
-def query_object(galaxy_names):
-    result_tables = [Ned.query_object(g).to_pandas() for g in galaxy_names]
+def query_object(astro_object):
+    return Ned.query_object(astro_object).to_pandas()
+
+
+def query_objects(list_of_astro_objects):
+    result_tables = [Ned.query_object(astro_object).to_pandas() for astro_object in list_of_astro_objects]
     df_tables = pd.concat(result_tables, sort=False)
     df_tables = df_tables.dropna(axis=1)
     df_tables.head()
     df_tables = df_tables.drop(['No.'], axis=1)
     return df_tables
-
-#
-# def get_cgmw():
-#     file_path = os.getcwd() + '/RAW_INPUT_DATA_CGMW'
-#     df_tables = retrieve_tables(file_path)
