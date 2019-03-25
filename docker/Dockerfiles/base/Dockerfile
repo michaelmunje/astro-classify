@@ -6,9 +6,13 @@ LABEL maintainer="continuumio"
 RUN conda install --quiet --yes \
     'numpy' \
     'pandas' \
-    'selenium' && \
+    'tensorflow' \
+    'pytest' \
+    'pytest-cov' \
+    'keras' && \
     conda install openjdk && \
     conda clean -tipsy && \
-    pip install astroquery
-
-CMD bash -c 'cd galana;bash'
+    pip install pytest-cov && \
+    conda install -c astropy astroquery && \
+    mkdir .astropy && \
+    chmod 667 .astropy
