@@ -1,19 +1,18 @@
 import pytest
-import galana as ga
+from galana import preprocessing
 import os
 
 
 def test_galaxy_name_extraction():
     root_dir = os.getcwd()
-    input_dir = os.path.join('tests', 'pipeline', 'test_input', 'galaxy_name_extraction')
+    input_dir = os.path.join('tests', 'preprocessing', 'test_input', 'galaxy_name_extraction')
     filename = os.path.join(os.sep, root_dir, input_dir, 'RAW_NASA_DATABASE_TABLE')
-    df = ga.preprocessing.extract_galaxy_names(filename)
-    print(df['names'])
-    assert(len(df['names']) == 3)
-    if len(df['names']) == 3:
-        assert(df['names'][0] == "SOME GALAXY")
-        assert(df['names'][1] == "ANOTHER GALAXY")
-        assert(df['names'][2] == "LAST ONE")
+    galaxy_list = preprocessing.extract_galaxy_names(filename)
+    assert(len(galaxy_list) == 3)
+    if len(galaxy_list) == 3:
+        assert(galaxy_list[0] == "SOME GALAXY")
+        assert(galaxy_list[1] == "ANOTHER GALAXY")
+        assert(galaxy_list[2] == "LAST ONE")
 
 
 if __name__ == '__main__':
