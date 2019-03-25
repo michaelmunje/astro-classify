@@ -12,4 +12,6 @@ RUN conda install --quiet --yes \
     'keras' && \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    fix-permissions /home/$NB_USER && \
+    pip uninstall -y keras-preprocessing && \
+    pip install git+https://github.com/keras-team/keras-preprocessing.git
