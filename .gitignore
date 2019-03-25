@@ -241,3 +241,5 @@ docker/Dockerfiles/current_installs/mine/Dockerfile
 docker/Dockerfiles/current_installs/test/Dockerfile
 
 tests/preprocessing/output
+
+wip/
