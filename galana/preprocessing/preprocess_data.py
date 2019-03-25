@@ -5,7 +5,7 @@ root_dir = os.getcwd()
 clean_dir = root_dir + "data/tables/clean"
 
 
-def preprocess_data(filepath, output_path=clean_dir):
+def preprocess_file(filepath, output_path=clean_dir):
     df = extract_data(filepath)
     filename = '/'.split(filepath)[-1]
     df.to_csv(output_path + '/' + filename)
@@ -13,4 +13,4 @@ def preprocess_data(filepath, output_path=clean_dir):
 
 def preprocess_folder(folderpath, output_path=clean_dir):
     for filename in os.listdir(folderpath):
-        preprocess_data(filename, output_path)
+        preprocess_file(folderpath + '/' + filename, output_path)
