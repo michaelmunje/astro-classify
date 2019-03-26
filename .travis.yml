@@ -20,7 +20,10 @@ script:
   - pip install coveralls
   - pip install sphinx
   - pip install astroquery
+  - pip install keras
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
+  - pip uninstall -y keras-preprocessing
+  - pip install git+https://github.com/keras-team/keras-preprocessing.git
   - cd docs
   - make html
   - cd ..

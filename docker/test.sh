@@ -10,7 +10,7 @@ echo -e "\e[39m"
 cp Dockerfiles/base/Dockerfile Dockerfiles/current_installs/base/Dockerfile
 else
 	if cmp --silent Dockerfiles/base/Dockerfile Dockerfiles/current_installs/base/Dockerfile ; then
-	 echo -e "\e[96mLabase version detected..."
+	 echo -e "\e[96mLatest version detected..."
 	 echo -e "\e[39m"
 	else
 	 echo -e "\e[96mOld version detected. Installing new version..."
