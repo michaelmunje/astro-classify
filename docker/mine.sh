@@ -3,7 +3,7 @@ if [[ "$(docker images -q galana 2> /dev/null)" == "" ]]; then
 echo -e "\e[96mDocker tag not found. Building docker image..."
 echo -e "\e[39m"
 cd Dockerfiles/install
-./install.sh
+./install_base.sh
 cd ../..
 echo -e "\e[96mDocker image finished building."
 echo -e "\e[39m"
