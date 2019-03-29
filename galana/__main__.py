@@ -2,6 +2,7 @@ import pickle
 import os
 import sys
 import xamin
+import models
 
 
 root_dir = os.getcwd()
@@ -65,8 +66,11 @@ def get_all_mining_data():
 
 
 if __name__ == '__main__':
-    if ' '.join(sys.argv[1:]) == "Get All Mining Data":
+    system_arguments = ' '.join(sys.argv[1:])
+    if system_arguments == "Get All Mining Data":
         get_all_mining_data()
+    elif system_arguments == "Train Model":
+        models.train_model()
     else:
         progress = load_progress()
         if progress is None:
