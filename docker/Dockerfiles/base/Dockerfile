@@ -16,5 +16,5 @@ RUN conda install --quiet --yes \
     conda install -c astropy astroquery && \
     mkdir .astropy && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git
+    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
     chmod 667 .astropy
