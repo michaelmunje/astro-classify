@@ -6,7 +6,7 @@ LABEL maintainer="continuumio"
 RUN conda install --quiet --yes \
     'numpy' \
     'pandas' \
-    'tensorflow' \
+    'tensorflow-gpu' \
     'pytest' \
     'pytest-cov' \
     'keras' && \
@@ -15,4 +15,6 @@ RUN conda install --quiet --yes \
     pip install pytest-cov && \
     conda install -c astropy astroquery && \
     mkdir .astropy && \
+    pip uninstall -y keras-preprocessing && \
+    pip install git+https://github.com/keras-team/keras-preprocessing.git
     chmod 667 .astropy
