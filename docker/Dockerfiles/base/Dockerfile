@@ -1,7 +1,7 @@
-ARG BASE_CONTAINER=continuumio/miniconda3
+ARG BASE_CONTAINER=tensorflow/tensorflow:devel-gpu
 FROM $BASE_CONTAINER
 
-LABEL maintainer="continuumio"
+LABEL maintainer="tensorflow"
 
 RUN conda install --quiet --yes \
     'numpy' \
