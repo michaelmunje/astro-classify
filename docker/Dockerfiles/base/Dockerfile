@@ -3,10 +3,12 @@ FROM $BASE_CONTAINER
 
 LABEL maintainer=""
 
-RUN conda install --quiet --yes \
+RUN conda update -n base conda && \
+    conda install --quiet --yes \
     'numpy' \
     'pandas' \
     'pytest' \
+    'keras' \
     'pytest-cov' && \
     conda install openjdk && \
     conda clean -tipsy && \
