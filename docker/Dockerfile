@@ -22,4 +22,6 @@ RUN apt-get update && \
     apt-get install -y git && \
     pip uninstall -y keras-preprocessing && \
     pip install git+https://github.com/keras-team/keras-preprocessing.git && \
-    pip install pillow
+    pip install pillow && \
+    conda install --quiet --yes 'jupyter' && \
+    pip install jupyter-tensorboard
