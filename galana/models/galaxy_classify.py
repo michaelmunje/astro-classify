@@ -116,6 +116,7 @@ def train_model():
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
     STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
     model.fit_generator(generator=generator_wrapper(train_generator),
+                        use_multiprocessing=True,
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=generator_wrapper(valid_generator),
                         validation_steps=STEP_SIZE_VALID,
