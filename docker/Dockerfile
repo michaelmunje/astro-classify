@@ -12,16 +12,15 @@ RUN apt-get update && \
     'pandas' \
     'pytest' \
     'keras' \
-    'pytest-cov' && \
+    'pytest-cov' \
+    'pillow' \
+    'jupyter' && \
+    pip install 'jupyter-tensorboard' && \
     conda install openjdk && \
     conda clean -tipsy && \
-    pip install pytest-cov && \
     conda install -c astropy astroquery && \
     mkdir .astropy && \
     chmod 667 .astropy && \
     apt-get install -y git && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
-    pip install pillow && \
-    conda install --quiet --yes 'jupyter' && \
-    pip install jupyter-tensorboard
+    pip install git+https://github.com/keras-team/keras-preprocessing.git
