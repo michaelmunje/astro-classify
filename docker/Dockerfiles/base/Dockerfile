@@ -17,6 +17,8 @@ RUN apt-get update && \
     conda clean -tipsy && \
     pip install pytest-cov && \
     conda install -c astropy astroquery && \
+    conda uninstall PIL && \
+    conda install Pillow && \
     mkdir .astropy && \
     chmod 667 .astropy && \
     apt-get install -y git && \
