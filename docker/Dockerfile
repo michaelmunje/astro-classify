@@ -1,7 +1,7 @@
 ARG BASE_CONTAINER=luke035/nvidia-anaconda-docker
 FROM $BASE_CONTAINER
 
-LABEL maintainer=""
+LABEL maintainer="Michael Munje"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
