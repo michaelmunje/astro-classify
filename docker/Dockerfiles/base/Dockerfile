@@ -19,4 +19,4 @@ RUN conda update -n base conda && \
     chmod 667 .astropy && \
     apt-get install git && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git
+    pip install -y git+https://github.com/keras-team/keras-preprocessing.git
