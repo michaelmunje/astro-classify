@@ -8,12 +8,12 @@ import numpy as np
 import os
 
 
-test_image_path = os.getcwd() + '/../../data/kaggle/images_test_rev1/'
+test_image_path = os.getcwd() + '/data/kaggle/images_test_rev1/'
 test_image_files = os.listdir(test_image_path)
-train_image_path = os.getcwd() + '/../../data/kaggle/images_training_rev1/'
+train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
 train_image_files = os.listdir(train_image_path)
-train_solutions = os.getcwd() + '/../../data/kaggle/training_solutions_rev1.csv'
-test_file = os.getcwd() + '/../../data/kaggle/all_zeros_benchmark.csv'
+train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
+test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
 
 df_headers = list()
 model = Model()
