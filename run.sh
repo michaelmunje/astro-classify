@@ -21,7 +21,14 @@ else
 fi
 echo -e "\e[96mRunning galana container..."
 echo -e "\e[39m"
-docker run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; bash"
+if [[ $1 == 'test' ]]; then
+docker run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; python -m pytest --cov=galana/ -W ignore::DeprecationWarning"
+elif [[ $1 == 'jupyter' ]]
+then
+docker run -ti --rm --net=host -v $(pwd):/home/jovyan/:rw -u `id -u $USER`:`id -g $USER` galana bash -c "rm -rf /home/joyvan/work;jupyter notebook"
+else
+docker run -ti --rm --net=host -v $(pwd):/galana:rw galana bash -c "cd galana; bash"
+fi
 
 
 
