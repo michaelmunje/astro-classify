@@ -24,12 +24,12 @@ def append_ext(fn):
 
 
 def generator_wrapper(generator):
-    for batch_x,batch_y in generator:
-        yield (batch_x,[batch_y[:,i] for i in range(len(df_headers)-1)])
+    for batch_x, batch_y in generator:
+        yield (batch_x, [batch_y[:, i] for i in range(len(df_headers)-1)])
 
 
 def construct_model(df_headers):
-    inp = Input(shape = (424,424,3))
+    inp = Input(shape=(424,424,3))
     x = Conv2D(32, (3, 3), padding = 'same')(inp)
     x = Activation('relu')(x)
     x = Conv2D(32, (3, 3))(x)
@@ -50,10 +50,12 @@ def construct_model(df_headers):
     outputs = []
     losses = ['binary_crossentropy']*(len(df_headers)-1)
     for _ in range(len(df_headers)-1):
-        outputs.append(Dense(1, activation = 'sigmoid')(x))
-    model = Model(inp,outputs)
-    model.compile(optimizers.rmsprop(lr = 0.0001, decay = 1e-6),
-    loss=losses,metrics=["accuracy"])
+        outputs.append(Dense(1, activation='sigmoid')(x))
+    model = Model(inp, outputs)
+    model.compile(optimizers.rmsprop(lr=0.0001,
+                                     decay=1e-6),
+                  loss=losses,
+                  metrics=["accuracy"])
     
     return model
 
@@ -82,7 +84,7 @@ def train_model():
         seed=42,
         shuffle=True,
         class_mode="other",
-        target_size=(424,424))
+        target_size=(424, 424))
 
     valid_generator=datagen.flow_from_dataframe(
         dataframe=traindf,
@@ -94,7 +96,7 @@ def train_model():
         seed=42,
         shuffle=True,
         class_mode="other",
-        target_size=(424,424))
+        target_size=(424, 424))
 
     test_generator = test_datagen.flow_from_dataframe(
         dataframe=testdf,
@@ -105,19 +107,20 @@ def train_model():
         seed=42,
         shuffle=False,
         class_mode=None,
-        target_size=(424,424))
+        target_size=(424, 424))
 
     model = construct_model(df_headers)
 
     # Train the model
-    STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
-    STEP_SIZE_VALID=valid_generator.n//valid_generator.batch_size
-    STEP_SIZE_TEST=test_generator.n//test_generator.batch_size
+    STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
+    STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
+    STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
     model.fit_generator(generator=generator_wrapper(train_generator),
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=generator_wrapper(valid_generator),
                         validation_steps=STEP_SIZE_VALID,
-                        epochs=1,verbose=2)
+                        epochs=1,
+                        verbose=2)
 
     # Predict Model
     test_generator.reset()
