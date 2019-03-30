@@ -1,18 +1,25 @@
-ARG BASE_CONTAINER=continuumio/miniconda3
+ARG BASE_CONTAINER=luke035/nvidia-anaconda-docker
 FROM $BASE_CONTAINER
 
-LABEL maintainer="continuumio"
+LABEL maintainer="Michael Munje"
 
-RUN conda install --quiet --yes \
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    conda update -n base conda && \
+    pip install --upgrade pip && \
+    conda install --quiet --yes \
     'numpy' \
     'pandas' \
-    'tensorflow' \
     'pytest' \
-    'pytest-cov' \
-    'keras' && \
+    'keras' \
+    'pytest-cov' && \
     conda install openjdk && \
     conda clean -tipsy && \
     pip install pytest-cov && \
     conda install -c astropy astroquery && \
     mkdir .astropy && \
-    chmod 667 .astropy
+    chmod 667 .astropy && \
+    apt-get install -y git && \
+    pip uninstall -y keras-preprocessing && \
+    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
+    pip install pillow
