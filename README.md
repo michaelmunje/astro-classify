@@ -14,6 +14,31 @@ The documentation for ``galana`` is available [here](https://galana.readthedocs.
 Installation & Dependencies
 ---------------------------
 
-Dependencies: Docker
+Dependencies: `Docker`
 
-Galana can be launched via docker by going to the docker directory and executing its proper mode (mine, ml, or test).
+Installation: `Automatically installs by launching.`
+
+How to Launch
+-------------
+
+Basic system: `./run.sh`
+
+Jupyter notebook: `./run.sh jupyter`
+
+Testing suite: `./run.sh test`
+
+Troubleshooting
+---------------
+
+For those with an IDE, a virtual environment is available. This can also be used to troubleshoot.
+
+Installing and running the virtual environment:
+
+`cd envs; ./install.sh; source activate_env.sh`
+
+Sometimes multiple docker container instances of the same image could cause problems. Run `./stop.sh` to retire all current containers.
+
+Uninstalling
+------------
+
+Uninstallation: `./uninstall.sh`
