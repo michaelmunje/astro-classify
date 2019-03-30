@@ -23,5 +23,5 @@ RUN apt-get update && \
     chmod 667 .astropy && \
     apt-get install -y git && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git
-
+    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
+    pip install pillow
