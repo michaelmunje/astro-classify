@@ -1,9 +1,10 @@
 from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Flatten, Dropout
-from keras.layers import Conv2D, MaxPooling2D, Cropping2D, GlobalAveragePooling2D
+from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras.applications import inception_v3
 from keras.optimizers import Adam
+from keras.callbacks import ModelCheckpoint
 import pandas as pd
 import os
 
@@ -16,6 +17,7 @@ train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
 test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
 output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
 output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
+checkpoint_path = "data/kaggle/checkpoint-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 
 def read_galaxy_zoo(filepath):
@@ -130,17 +132,21 @@ def train_model(transfer=False):
 
     print("Training model...")
 
+    checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    callbacks_list = [checkpoint]
+
     model.fit_generator(generator=train_generator,
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=valid_generator,
                         validation_steps=STEP_SIZE_VALID,
+                        callbacks=callbacks_list,
                         epochs=30)
 
     model_json = model.to_json()
     with open(output_model_file, "w") as json_file:
         json_file.write(model_json)
 
-    model.save_weights("model.h5")
+    model.save_weights(output_model_weights, overwrite=True)
 
     print("Saved model to: " + output_model_file)
     print("Saved weights to: " + output_model_weights)
