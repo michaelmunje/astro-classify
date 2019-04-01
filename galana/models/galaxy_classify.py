@@ -3,6 +3,7 @@ from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D, GlobalAveragePooling2D
 from keras.applications import inception_v3
+from keras.optimizers import Adam
 import pandas as pd
 import os
 
@@ -48,10 +49,8 @@ def append_ext(fn):
 
 def construct_transfer_model():
     model = Sequential([
-        inception_v3.InceptionV3(include_top=False, weights='imagenet',
-                                 input_shape=[424, 424, 3], pooling=None,
-                                 classes=1000),
-        GlobalAveragePooling2D(),
+        Cropping2D(cropping=((64, 63), (64, 63)), input_shape=[424, 424, 3]),
+        inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg'),
         Dense(1024, activation='relu'),
         Dense(1024, activation='relu'),
         Dense(512, activation='relu'),
@@ -64,7 +63,7 @@ def construct_transfer_model():
         layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='Adam',
+                  optimizer=Adam(lr=0.00001),
                   metrics=['accuracy'])
 
     return model
