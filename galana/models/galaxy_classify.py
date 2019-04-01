@@ -2,7 +2,7 @@ from keras.models import Model
 from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization, Input
-from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras import regularizers, optimizers
 import pandas as pd
 import numpy as np
@@ -40,7 +40,6 @@ def read_galaxy_zoo(filepath):
             'Class10.2', 'Class10.3', 'Class11.1', 'Class11.2', 'Class11.3', 'Class11.4',
             'Class11.5', 'Class11.6'])
 
-    print(df.head)
     return df
 
 
@@ -85,7 +84,8 @@ def construct_model(df_headers):
     # return model
 
     model = Sequential([
-        Conv2D(32, (3, 3), activation='relu', input_shape=[424, 424, 3]),
+        Cropping2D(cropping=((100, 100), (100, 100)), input_shape=[424, 424, 3]),
+        Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
         Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
@@ -94,11 +94,11 @@ def construct_model(df_headers):
         Flatten(),
         Dense(64, activation='relu'),
         Dropout(0.5),
-        Dense(37, activation='softmax')
+        Dense(4, activation='softmax')
     ])
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer='Adadelta',
                   metrics=['accuracy'])
     
     return model
@@ -114,8 +114,8 @@ def train_model():
     df_headers = list(traindf.columns)
     test_headers = list(testdf.columns)
 
-    datagen = IDG(rescale=1./255., validation_split=0.25)
-    test_datagen = IDG(rescale=1./255.)
+    datagen = IDG(rescale=1./255., validation_split=0.20)
+    # test_datagen = IDG(rescale=1./255.)
 
     # Create generators
     train_generator=datagen.flow_from_dataframe(
@@ -124,10 +124,8 @@ def train_model():
         x_col=df_headers[0],
         y_col=df_headers[1:],
         subset="training",
-        batch_size=32,
         seed=42,
-        shuffle=True,
-        class_mode="other",
+        class_mode='multi_output',
         target_size=(424, 424))
 
     valid_generator=datagen.flow_from_dataframe(
@@ -136,41 +134,38 @@ def train_model():
         x_col=df_headers[0],
         y_col=df_headers[1:],
         subset="validation",
-        batch_size=32,
         seed=42,
-        shuffle=True,
-        class_mode="other",
+        class_mode='multi_output',
         target_size=(424, 424))
-
-    test_generator = test_datagen.flow_from_dataframe(
-        dataframe=testdf,
-        directory=test_image_path,
-        x_col=test_headers[0],
-        y_col=test_headers[1:],
-        batch_size=32,
-        seed=42,
-        shuffle=False,
-        class_mode=None,
-        target_size=(424, 424))
+    #
+    # test_generator = test_datagen.flow_from_dataframe(
+    #     dataframe=testdf,
+    #     directory=test_image_path,
+    #     x_col=test_headers[0],
+    #     y_col=test_headers[1:],
+    #     batch_size=32,
+    #     seed=42,
+    #     shuffle=False,
+    #     class_mode=None,
+    #     target_size=(424, 424))
 
     model = construct_model(df_headers)
 
     # Train the model
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
-    STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
     model.fit_generator(generator=generator_wrapper(train_generator),
-                        use_multiprocessing=True,
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=generator_wrapper(valid_generator),
                         validation_steps=STEP_SIZE_VALID,
                         epochs=1,
                         verbose=2)
 
-    # Predict Model
-    test_generator.reset()
-    pred = model.predict_generator(test_generator,
-                                  steps=STEP_SIZE_TEST,
-                                  verbose=1)
+    # STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
+    # # Predict Model
+    # test_generator.reset()
+    # pred = model.predict_generator(test_generator,
+    #                               steps=STEP_SIZE_TEST,
+    #                               verbose=1)
 
 
