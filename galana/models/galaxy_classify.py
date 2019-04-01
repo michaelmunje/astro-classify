@@ -15,6 +15,7 @@ train_image_files = os.listdir(train_image_path)
 train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
 test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
 output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
+output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
 
 
 def read_galaxy_zoo(filepath):
@@ -56,11 +57,6 @@ def construct_transfer_model():
         Dense(512, activation='relu'),
         Dense(4, activation='softmax')
     ])
-
-    # for layer in model.layers[:20]:
-    #     layer.trainable = False
-    # for layer in model.layers[20:]:
-    #     layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adam(lr=0.000001),
@@ -138,10 +134,13 @@ def train_model(transfer=False):
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=valid_generator,
                         validation_steps=STEP_SIZE_VALID,
-                        epochs=10)
+                        epochs=30)
 
     model_json = model.to_json()
     with open(output_model_file, "w") as json_file:
         json_file.write(model_json)
 
+    model.save_weights("model.h5")
+
     print("Saved model to: " + output_model_file)
+    print("Saved weights to: " + output_model_weights)
