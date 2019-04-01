@@ -1,11 +1,8 @@
-from keras.models import Model
-from keras.models import Sequential, model_from_json
+from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
-from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization, Input
+from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D
-from keras import regularizers, optimizers
 import pandas as pd
-import numpy as np
 import os
 
 
@@ -48,47 +45,19 @@ def append_ext(fn):
     return fn + ".jpg"
 
 
-def construct_model(df_headers):
-    # inp = Input(shape=(424,424,3))
-    # x = Conv2D(32, (3, 3), padding = 'same')(inp)
-    # x = Activation('relu')(x)
-    # x = Conv2D(32, (3, 3))(x)
-    # x = Activation('relu')(x)
-    # x = MaxPooling2D(pool_size = (2, 2))(x)
-    # x = Dropout(0.25)(x)
-    # x = Conv2D(64, (3, 3), padding = 'same')(x)
-    # x = Activation('relu')(x)
-    # x = Conv2D(64, (3, 3))(x)
-    # x = Activation('relu')(x)
-    # x = MaxPooling2D(pool_size = (2, 2))(x)
-    # x = Dropout(0.25)(x)
-    # x = Flatten()(x)
-    # x = Dense(512)(x)
-    # x = Activation('relu')(x)
-    # x = Dropout(0.5)(x)
-    #
-    # outputs = []
-    # losses = ['binary_crossentropy']*(len(df_headers)-1)
-    # for _ in range(len(df_headers)-1):
-    #     outputs.append(Dense(1, activation='sigmoid')(x))
-    # model = Model(inp, outputs)
-    # model.compile(optimizers.rmsprop(lr=0.0001,
-    #                                  decay=1e-6),
-    #               loss=losses,
-    #               metrics=["accuracy"])
-    #
-    # return model
-
+def construct_model():
     model = Sequential([
         Cropping2D(cropping=((100, 100), (100, 100)), input_shape=[424, 424, 3]),
         Conv2D(32, (3, 3), activation='relu'),
-        MaxPooling2D(pool_size=(2, 2)),
         Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Conv2D(64, (3, 3), activation='relu'),
         Conv2D(64, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
         Flatten(),
-        Dense(64, activation='relu'),
+        Dense(512, activation='relu'),
         Dropout(0.5),
         Dense(4, activation='softmax')
     ])
@@ -103,15 +72,11 @@ def construct_model(df_headers):
 def train_model():
 
     traindf = read_galaxy_zoo(train_solutions)
-    testdf = read_galaxy_zoo(test_file)
 
     traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
-    testdf["GalaxyID"] = testdf["GalaxyID"].apply(append_ext)
     df_headers = list(traindf.columns)
-    test_headers = list(testdf.columns)
 
     datagen = IDG(rescale=1./255., validation_split=0.20)
-    # test_datagen = IDG(rescale=1./255.)
 
     # Create generators
     train_generator = datagen.flow_from_dataframe(
@@ -134,7 +99,7 @@ def train_model():
         seed=42,
         target_size=(424, 424))
 
-    model = construct_model(df_headers)
+    model = construct_model()
 
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
