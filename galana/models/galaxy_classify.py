@@ -70,9 +70,6 @@ def construct_model():
 
 
 def train_model():
-    from tensorflow.python.client import device_lib
-    print(device_lib.list_local_devices())
-
     traindf = read_galaxy_zoo(train_solutions)
 
     traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
@@ -106,6 +103,8 @@ def train_model():
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
 
+    print("Training model...")
+
     model.fit_generator(generator=train_generator,
                         steps_per_epoch=STEP_SIZE_TRAIN,
                         validation_data=valid_generator,
@@ -118,4 +117,4 @@ def train_model():
     with open(output_model_file, "w") as json_file:
         json_file.write(model_json)
 
-
+    print("Saved model to: " + output_model_file)
