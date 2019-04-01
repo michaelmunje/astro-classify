@@ -10,20 +10,16 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create -f envs/backup_ymls/test_env.yml
+  - cd envs
+  - ./install.sh
 # command to run tests
 script:
   - cd envs
-  - source test.sh
+  - source activate_env.sh
   - cd ..
-  - pip install pytest-cov
   - pip install coveralls
   - pip install sphinx
-  - pip install astroquery
-  - pip install keras
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
-  - pip uninstall -y keras-preprocessing
-  - pip install git+https://github.com/keras-team/keras-preprocessing.git
   - cd docs
   - make html
   - cd ..
