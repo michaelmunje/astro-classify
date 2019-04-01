@@ -63,7 +63,7 @@ def construct_transfer_model():
     #     layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(lr=0.00001),
+                  optimizer=Adam(lr=0.000001),
                   metrics=['accuracy'])
 
     return model
