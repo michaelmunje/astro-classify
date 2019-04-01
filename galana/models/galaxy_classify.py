@@ -57,10 +57,10 @@ def construct_transfer_model():
         Dense(4, activation='softmax')
     ])
 
-    for layer in model.layers[:20]:
-        layer.trainable = False
-    for layer in model.layers[20:]:
-        layer.trainable = True
+    # for layer in model.layers[:20]:
+    #     layer.trainable = False
+    # for layer in model.layers[20:]:
+    #     layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adam(lr=0.00001),
