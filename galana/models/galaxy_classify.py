@@ -28,7 +28,6 @@ def read_galaxy_zoo(filepath):
     df['Spiral'] = df['Class1.2'] * df['Class2.2']
     df['Irregular'] = df['Class6.1'] * (df['Class1.1'] + (df['Class1.2'] * df['Class2.1']))
     df['Elliptical'] = df['Class6.2'] * (df['Class1.1'] + (df['Class1.2'] * df['Class2.1']))
-
     df['Other'] = 1 - df['Elliptical'] - df['Irregular'] - df['Spiral']
 
     df = df.drop(columns=['Class1.1', 'Class1.2', 'Class1.3', 'Class2.1',
@@ -40,16 +39,9 @@ def read_galaxy_zoo(filepath):
             'Class10.2', 'Class10.3', 'Class11.1', 'Class11.2', 'Class11.3', 'Class11.4',
             'Class11.5', 'Class11.6'])
 
-    series_tmp = df['GalaxyID']
-    df = df.drop(columns='GalaxyID')
-
-    df['Type'] = df.idxmax(axis=1)
-
-    df['GalaxyID'] = series_tmp
+    df['Type'] = df.loc[:, 'Spiral':'Other'].idxmax(axis=1)
 
     df = df.drop(columns=['Spiral', 'Elliptical', 'Irregular', 'Other'])
-
-    df = df[['GalaxyID', 'Type']]
 
     return df
 
@@ -143,7 +135,7 @@ def train_model():
         class_mode='categorical',
         seed=42,
         target_size=(424, 424))
-    #
+
     # test_generator = test_datagen.flow_from_dataframe(
     #     dataframe=testdf,
     #     directory=test_image_path,
