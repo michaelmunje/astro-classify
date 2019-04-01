@@ -70,6 +70,8 @@ def construct_model():
 
 
 def train_model():
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
 
     traindf = read_galaxy_zoo(train_solutions)
 
