@@ -1,7 +1,8 @@
 from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Flatten, Dropout
-from keras.layers import Conv2D, MaxPooling2D, Cropping2D
+from keras.layers import Conv2D, MaxPooling2D, Cropping2D, GlobalAveragePooling2D
+from keras.applications import inception_v3
 import pandas as pd
 import os
 
@@ -45,6 +46,30 @@ def append_ext(fn):
     return fn + ".jpg"
 
 
+def construct_transfer_model():
+    model = Sequential([
+        inception_v3.InceptionV3(include_top=False, weights='imagenet',
+                                 input_shape=[424, 424, 3], pooling=None,
+                                 classes=1000),
+        GlobalAveragePooling2D(),
+        Dense(1024, activation='relu'),
+        Dense(1024, activation='relu'),
+        Dense(512, activation='relu'),
+        Dense(4, activation='softmax')
+    ])
+
+    for layer in model.layers[:20]:
+        layer.trainable = False
+    for layer in model.layers[20:]:
+        layer.trainable = True
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='Adadelta',
+                  metrics=['accuracy'])
+
+    return model
+
+
 def construct_model():
     model = Sequential([
         Cropping2D(cropping=((100, 100), (100, 100)), input_shape=[424, 424, 3]),
@@ -69,7 +94,7 @@ def construct_model():
     return model
 
 
-def train_model():
+def train_model(transfer=False):
     traindf = read_galaxy_zoo(train_solutions)
 
     traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
@@ -100,7 +125,10 @@ def train_model():
         seed=42,
         target_size=(424, 424))
 
-    model = construct_model()
+    if transfer:
+        model = construct_transfer_model()
+    else:
+        model = construct_model()
 
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
