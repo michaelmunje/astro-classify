@@ -141,8 +141,6 @@ def train_model(transfer=False):
                         validation_steps=STEP_SIZE_VALID,
                         epochs=10)
 
-    model.evaluate_generator(generator=valid_generator)
-
     model_json = model.to_json()
     with open(output_model_file, "w") as json_file:
         json_file.write(model_json)
