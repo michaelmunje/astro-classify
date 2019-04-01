@@ -245,3 +245,6 @@ tests/preprocessing/output
 wip/
 
 docker/Dockercache
+
+# Zip files
+*.gz

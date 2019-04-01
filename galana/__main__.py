@@ -64,11 +64,16 @@ def get_all_mining_data():
     xamin.install()
     xamin.get_all_raw()
 
+def get_gz():
+    xamin.download_tables()
+
 
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
-    if system_arguments == "Get All Mining Data":
-        get_all_mining_data()
+    if system_arguments == "Mine Data":
+        # get_all_mining_data()
+        # get_gz()
+        
     elif system_arguments == "Train Model":
         models.train_model()
     else:
