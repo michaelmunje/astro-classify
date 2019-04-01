@@ -40,16 +40,22 @@ def read_galaxy_zoo(filepath):
             'Class10.2', 'Class10.3', 'Class11.1', 'Class11.2', 'Class11.3', 'Class11.4',
             'Class11.5', 'Class11.6'])
 
+    series_tmp = df['GalaxyID']
+    df = df.drop(columns='GalaxyID')
+
+    df['Type'] = df.idxmax(axis=1)
+
+    df['GalaxyID'] = series_tmp
+
+    df = df.drop(columns=['Spiral', 'Elliptical', 'Irregular', 'Other'])
+
+    df = df[['GalaxyID', 'Type']]
+
     return df
 
 
 def append_ext(fn):
     return fn + ".jpg"
-
-
-def generator_wrapper(generator):
-    for batch_x, batch_y in generator:
-        yield (batch_x, [batch_y[:, i] for i in range(len(df_headers)-1)])
 
 
 def construct_model(df_headers):
@@ -118,24 +124,24 @@ def train_model():
     # test_datagen = IDG(rescale=1./255.)
 
     # Create generators
-    train_generator=datagen.flow_from_dataframe(
+    train_generator = datagen.flow_from_dataframe(
         dataframe=traindf,
         directory=train_image_path,
         x_col=df_headers[0],
-        y_col=df_headers[1:],
+        y_col=df_headers[1],
         subset="training",
+        class_mode='categorical',
         seed=42,
-        class_mode='multi_output',
         target_size=(424, 424))
 
-    valid_generator=datagen.flow_from_dataframe(
+    valid_generator = datagen.flow_from_dataframe(
         dataframe=traindf,
         directory=train_image_path,
         x_col=df_headers[0],
-        y_col=df_headers[1:],
+        y_col=df_headers[1],
         subset="validation",
+        class_mode='categorical',
         seed=42,
-        class_mode='multi_output',
         target_size=(424, 424))
     #
     # test_generator = test_datagen.flow_from_dataframe(
@@ -154,12 +160,14 @@ def train_model():
     # Train the model
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
-    model.fit_generator(generator=generator_wrapper(train_generator),
+
+    model.fit_generator(generator=train_generator,
                         steps_per_epoch=STEP_SIZE_TRAIN,
-                        validation_data=generator_wrapper(valid_generator),
+                        validation_data=valid_generator,
                         validation_steps=STEP_SIZE_VALID,
-                        epochs=1,
-                        verbose=2)
+                        epochs=10)
+
+    model.evaluate_generator(generator=valid_generator)
 
     # STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
     # # Predict Model
