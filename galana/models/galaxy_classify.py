@@ -85,6 +85,7 @@ def train_model():
         y_col=df_headers[1],
         subset="training",
         class_mode='categorical',
+        batch_size=24,
         seed=42,
         target_size=(424, 424))
 
@@ -95,6 +96,7 @@ def train_model():
         y_col=df_headers[1],
         subset="validation",
         class_mode='categorical',
+        batch_size=24,
         seed=42,
         target_size=(424, 424))
 
