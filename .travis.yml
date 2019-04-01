@@ -19,6 +19,8 @@ script:
   - cd ..
   - pip install coveralls
   - pip install sphinx
+  - pip uninstall tensorflow-gpu
+  - pip install tensorflow
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
   - cd docs
   - make html
