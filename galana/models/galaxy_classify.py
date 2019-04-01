@@ -1,4 +1,5 @@
 from keras.models import Model
+from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization, Input
 from keras.layers import Conv2D, MaxPooling2D
@@ -42,33 +43,52 @@ def generator_wrapper(generator):
 
 
 def construct_model(df_headers):
-    inp = Input(shape=(424,424,3))
-    x = Conv2D(32, (3, 3), padding = 'same')(inp)
-    x = Activation('relu')(x)
-    x = Conv2D(32, (3, 3))(x)
-    x = Activation('relu')(x)
-    x = MaxPooling2D(pool_size = (2, 2))(x)
-    x = Dropout(0.25)(x)
-    x = Conv2D(64, (3, 3), padding = 'same')(x)
-    x = Activation('relu')(x)
-    x = Conv2D(64, (3, 3))(x)
-    x = Activation('relu')(x)
-    x = MaxPooling2D(pool_size = (2, 2))(x)
-    x = Dropout(0.25)(x)
-    x = Flatten()(x)
-    x = Dense(512)(x)
-    x = Activation('relu')(x)
-    x = Dropout(0.5)(x)
+    # inp = Input(shape=(424,424,3))
+    # x = Conv2D(32, (3, 3), padding = 'same')(inp)
+    # x = Activation('relu')(x)
+    # x = Conv2D(32, (3, 3))(x)
+    # x = Activation('relu')(x)
+    # x = MaxPooling2D(pool_size = (2, 2))(x)
+    # x = Dropout(0.25)(x)
+    # x = Conv2D(64, (3, 3), padding = 'same')(x)
+    # x = Activation('relu')(x)
+    # x = Conv2D(64, (3, 3))(x)
+    # x = Activation('relu')(x)
+    # x = MaxPooling2D(pool_size = (2, 2))(x)
+    # x = Dropout(0.25)(x)
+    # x = Flatten()(x)
+    # x = Dense(512)(x)
+    # x = Activation('relu')(x)
+    # x = Dropout(0.5)(x)
+    #
+    # outputs = []
+    # losses = ['binary_crossentropy']*(len(df_headers)-1)
+    # for _ in range(len(df_headers)-1):
+    #     outputs.append(Dense(1, activation='sigmoid')(x))
+    # model = Model(inp, outputs)
+    # model.compile(optimizers.rmsprop(lr=0.0001,
+    #                                  decay=1e-6),
+    #               loss=losses,
+    #               metrics=["accuracy"])
+    #
+    # return model
 
-    outputs = []
-    losses = ['binary_crossentropy']*(len(df_headers)-1)
-    for _ in range(len(df_headers)-1):
-        outputs.append(Dense(1, activation='sigmoid')(x))
-    model = Model(inp, outputs)
-    model.compile(optimizers.rmsprop(lr=0.0001,
-                                     decay=1e-6),
-                  loss=losses,
-                  metrics=["accuracy"])
+    model = Sequential([
+        Conv2D(32, (3, 3), activation='relu', input_shape=[424, 424, 3]),
+        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(32, (3, 3), activation='relu'),
+        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D(pool_size=(2, 2)),
+        Flatten(),
+        Dense(64, activation='relu'),
+        Dropout(0.5),
+        Dense(37, activation='softmax')
+    ])
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='rmsprop',
+                  metrics=['accuracy'])
     
     return model
 
