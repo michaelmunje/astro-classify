@@ -7,7 +7,8 @@ conda install -y --quiet --yes \
     'tensorflow' \
     'pytest' \
     'pytest-cov' \
-    'keras'
+    'keras' \
+    'pillow'
 conda clean -tipsy
 pip install pytest-cov
 conda install -y -c astropy astroquery
