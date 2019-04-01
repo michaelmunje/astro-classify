@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.models import Sequential
+from keras.models import Sequential, model_from_json
 from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization, Input
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D
@@ -15,9 +15,7 @@ train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
 train_image_files = os.listdir(train_image_path)
 train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
 test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
-
-df_headers = list()
-model = Model()
+output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
 
 
 def read_galaxy_zoo(filepath):
@@ -136,20 +134,8 @@ def train_model():
         seed=42,
         target_size=(424, 424))
 
-    # test_generator = test_datagen.flow_from_dataframe(
-    #     dataframe=testdf,
-    #     directory=test_image_path,
-    #     x_col=test_headers[0],
-    #     y_col=test_headers[1:],
-    #     batch_size=32,
-    #     seed=42,
-    #     shuffle=False,
-    #     class_mode=None,
-    #     target_size=(424, 424))
-
     model = construct_model(df_headers)
 
-    # Train the model
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
 
@@ -161,11 +147,8 @@ def train_model():
 
     model.evaluate_generator(generator=valid_generator)
 
-    # STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
-    # # Predict Model
-    # test_generator.reset()
-    # pred = model.predict_generator(test_generator,
-    #                               steps=STEP_SIZE_TEST,
-    #                               verbose=1)
+    model_json = model.to_json()
+    with open(output_model_file, "w") as json_file:
+        json_file.write(model_json)
 
 
