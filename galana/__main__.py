@@ -66,7 +66,7 @@ def get_all_mining_data():
 
 def get_gz():
     # xamin.download_tables()
-    xamin.handle_gz_tables()
+    xamin.mc_gz_to_csv()
 
 
 if __name__ == '__main__':
