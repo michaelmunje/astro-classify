@@ -5,7 +5,9 @@ from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras.applications import inception_v3
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
+from keras.models import model_from_json, Model
 import pandas as pd
+import numpy as np
 import os
 
 
@@ -30,6 +32,68 @@ def populate_paths():
     output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
     output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
     checkpoint_path = "data/kaggle/checkpoint-{epoch:02d}-{val_acc:.2f}.hdf5"
+
+
+def calc_conf_matrix(y_pred, y_actual):
+    conf_matrix = np.zeros((y_pred.size(), y_pred.size()))
+
+    for pred_row, actual_row  in zip(y_pred, y_actual):
+        conf_matrix[np.argmax(pred_row), np.argmax(actual_row)] += 1
+
+    return conf_matrix
+
+
+def eval_metrics():
+    populate_paths()
+
+    # Model reconstruction from JSON file
+    with open(output_model_file, 'r') as f:
+        model = model_from_json(f.read())
+
+    # Load weights into the new model
+    model.load_weights(output_model_weights)
+
+    traindf = read_galaxy_zoo(train_solutions)
+
+    traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
+    df_headers = list(traindf.columns)
+
+    datagen = IDG(rescale=1./255., validation_split=0.20)
+
+    # Create generators
+    train_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="training",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(424, 424))
+
+    valid_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="validation",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(424, 424))
+
+    STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
+
+
+    y_pred = model.evaluate_generator(generator=valid_generator,
+                        steps=STEP_SIZE_VALID)
+
+    valid_generator.split
+
+
+    print(calc_conf_matrix())
+
 
 def read_galaxy_zoo(filepath):
     df = pd.read_csv(filepath)
