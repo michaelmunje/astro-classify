@@ -77,9 +77,6 @@ def construct_transfer_model():
 
     return model
 
-def summary():
-
-
 
 def construct_model():
     model = Sequential([
