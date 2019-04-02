@@ -11,16 +11,25 @@ install:
   - conda update -q conda
   - conda info -a
   - cd envs
-  - ./install.sh
+  - conda env create --name galana
 # command to run tests
 script:
-  - cd envs
-  - source activate_env.sh
-  - cd ..
+  - source activate galana
   - pip install coveralls
   - pip install sphinx
-  - pip uninstall tensorflow-gpu
-  - pip install tensorflow
+  - conda install -y --quiet --yes \
+    'numpy' \
+    'pandas' \
+    'tensorflow' \
+    'pytest' \
+    'pytest-cov' \
+    'keras' \
+    'pillow'
+  - conda clean -tipsy
+  - pip install pytest-cov
+  - conda install -y -c astropy astroquery
+  - pip uninstall -y keras-preprocessing
+  - pip install git+https://github.com/keras-team/keras-preprocessing.git
   - python -m pytest --cov=galana/ -W ignore::DeprecationWarning
   - cd docs
   - make html
