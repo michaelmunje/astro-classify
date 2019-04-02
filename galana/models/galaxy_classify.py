@@ -9,16 +9,27 @@ import pandas as pd
 import os
 
 
-test_image_path = os.getcwd() + '/data/kaggle/images_test_rev1/'
-test_image_files = os.listdir(test_image_path)
-train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
-train_image_files = os.listdir(train_image_path)
-train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
-test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
-output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
-output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
-checkpoint_path = "data/kaggle/checkpoint-{epoch:02d}-{val_acc:.2f}.hdf5"
+test_image_path = ""
+test_image_files = ""
+train_image_path = ""
+train_image_files = ""
+train_solutions = ""
+test_file = ""
+output_model_file = ""
+output_model_weights = ""
+checkpoint_path = ""
 
+
+def populate_paths():
+    test_image_path = os.getcwd() + '/data/kaggle/images_test_rev1/'
+    test_image_files = os.listdir(test_image_path)
+    train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
+    train_image_files = os.listdir(train_image_path)
+    train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
+    test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
+    output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
+    output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
+    checkpoint_path = "data/kaggle/checkpoint-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 def read_galaxy_zoo(filepath):
     df = pd.read_csv(filepath)
@@ -66,6 +77,9 @@ def construct_transfer_model():
 
     return model
 
+def summary():
+
+
 
 def construct_model():
     model = Sequential([
@@ -92,6 +106,7 @@ def construct_model():
 
 
 def train_model(transfer=False):
+    populate_paths()
     traindf = read_galaxy_zoo(train_solutions)
 
     traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
