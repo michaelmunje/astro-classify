@@ -10,9 +10,10 @@ import pathlib as pl
 get_root = os.getcwd()
 gz_dir = get_root + '/data/mine/gz_tables/'
 table_dir = get_root + '/data/mine/tables/'
+pl.Path(gz_dir).mkdir(parents=True, exist_ok=True)
+pl.Path(table_dir).mkdir(parents=True, exist_ok=True)
 
-def download_tables(gn, output_path=gz_dir):
-    pl.Path(output_path).mkdir(parents=True, exist_ok=True)
+def download_tables(gn):
     command = 'wget -O ' + gz_dir + gn + ".tdat.gz " + "https://heasarc.gsfc.nasa.gov/FTP/heasarc/dbase/tdat_files/heasarc_" + gn + ".tdat.gz"
     get_inline_script_output(command)
 
@@ -47,8 +48,7 @@ def parse_file(file_content):
     
     return df
 
-def handle_gz_tables(gf, output_path=table_dir):
-    pl.Path(output_path).mkdir(parents=True,exist_ok=True)
+def handle_gz_tables(gf):
     file_name = gf.split('.')
     if os.path.isfile(table_dir + file_name[0] + '.csv'):
         return
