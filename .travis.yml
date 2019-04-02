@@ -12,12 +12,11 @@ install:
   - conda info -a
   - cd envs
   - conda create --name galana
+  - cd ..
 # command to run tests
 script:
   - source activate galana
-  - conda install -y --quiet --yes numpy pandas tensorflow
-  - conda install -y --quiet --yes pytest pytest-cov
-  - conda install -y --quiet --yes keras pillow
+  - conda install -y --quiet --yes numpy pandas tensorflow pytest pytest-cov keras pillow
   - conda clean -tipsy
   - pip install coveralls
   - pip install sphinx
