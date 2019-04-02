@@ -46,12 +46,13 @@ def parse_file(file_content):
     return df
 
 def handle_gz_tables(gf):
+    file_name = gf.split('.')
+    if os.path.isfile(table_dir + file_name[0] + '.csv'):
+        return
     with gzip.open(gz_dir + gf, mode='rt') as f:
         file_content = f.read()
         file_content = file_content.split('\n')
         df = parse_file(file_content)
-
-        file_name = gf.split('.')
         df.to_csv(table_dir + file_name[0] + '.csv', sep=',')
 
 def mc_gz_to_csv():
@@ -64,7 +65,7 @@ def mc_gz_to_csv():
     
     pool = Pool()
     pool.map(handle_gz_tables, gz_files)
-    
+
                 
 
                 

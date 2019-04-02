@@ -246,5 +246,8 @@ wip/
 
 docker/Dockercache
 
-# Zip files
+# Misc files
 *.gz
+*.csv
+
+
