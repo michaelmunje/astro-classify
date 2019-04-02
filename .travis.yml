@@ -11,7 +11,7 @@ install:
   - conda update -q conda
   - conda info -a
   - cd envs
-  - conda env create --name galana
+  - conda create --name galana
 # command to run tests
 script:
   - source activate galana
