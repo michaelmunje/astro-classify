@@ -2,6 +2,7 @@ import pickle
 import os
 import sys
 import xamin
+import ned
 import models
 
 
@@ -65,8 +66,9 @@ def get_all_mining_data():
     xamin.get_all_raw()
 
 def get_gz():
-    xamin.multi_core_download()
-    xamin.mc_gz_to_csv()
+    # xamin.multi_core_download()
+    # xamin.mc_gz_to_csv()
+    ned.get_list_of_objects()
 
 def mine_gz():
     pass
@@ -76,7 +78,7 @@ if __name__ == '__main__':
     if system_arguments == "Download Data":
         get_gz()
         # get_all_mining_data()
-    if system_arguments == "Mine Data":
+    elif system_arguments == "Mine Data":
         mine_gz()
     elif system_arguments == "Train Model":
         models.train_model()
