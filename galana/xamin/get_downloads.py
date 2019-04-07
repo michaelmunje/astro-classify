@@ -49,6 +49,7 @@ def parse_file(file_content):
     return df
 
 def handle_gz_tables(gf):
+    print('Handling ' + gf)
     file_name = gf.split('.')
     if os.path.isfile(table_dir + file_name[0] + '.csv'):
         return
