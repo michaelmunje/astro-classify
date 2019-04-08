@@ -23,7 +23,7 @@ def query_objects(list_of_astro_objects):
     for i in range(0, len(list_of_astro_objects), 15):
         print('Going through', i, 'to', i+14)
         for obj in list_of_astro_objects[i:i+15]:
-            if obj in downloaded_names.keys() or obj in downloaded_names.values():
+            if obj not in downloaded_names.keys() and obj not in downloaded_names.values():
                 result = Ned.query_object(obj).to_pandas()
                 result_tables.append(result)
                 downloaded_names[obj] = [np.asarray(Simbad.query_objectids(obj).as_array(), dtype=str)]
