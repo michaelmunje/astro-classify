@@ -26,7 +26,9 @@ def query_objects(list_of_astro_objects):
             if obj not in downloaded_names.keys() and obj not in downloaded_names.values():
                 result = Ned.query_object(obj).to_pandas()
                 result_tables.append(result)
-                downloaded_names[obj] = [np.asarray(Simbad.query_objectids(obj).as_array(), dtype=str)]
+                ids = Simbad.query_objectids(obj)
+                if ids:
+                    downloaded_names[obj] = [np.asarray(ids.as_array(), dtype=str)]
 
     df_tables = pd.concat(result_tables, sort=False)
     df_tables = df_tables.dropna(axis=1)
