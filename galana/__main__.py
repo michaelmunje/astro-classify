@@ -65,13 +65,16 @@ def get_all_mining_data():
     xamin.install()
     xamin.get_all_raw()
 
+
 def get_gz():
     # xamin.multi_core_download()
     # xamin.mc_gz_to_csv()
     ned.get_list_of_objects()
 
+
 def mine_gz():
     pass
+
 
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
