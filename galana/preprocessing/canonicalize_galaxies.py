@@ -26,7 +26,7 @@ def canonicalize_galaxies():
             print('Processing ', index + 1, ' / ', len(df['name']), ' in file: ', table_csv)
 
             found_key = False
-            for key, value in downloaded_names:
+            for key, value in downloaded_names.items():
                 if name in value:
                     df.iloc[index,]['name'] = key
                     break
@@ -36,7 +36,7 @@ def canonicalize_galaxies():
 
             if not found_key:
                 ids = Simbad.query_objectids(name)
-                downloaded_names[name] = [np.asarray(ids.as_array(), dtype=str)] if ids else []
+                downloaded_names[name] = [np.asarray(ids.as_array(), dtype=str)][0] if ids else []
             
         df.to_csv(table_csv)
 
