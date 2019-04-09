@@ -69,7 +69,7 @@ def get_all_mining_data():
 def get_gz():
     # xamin.multi_core_download()
     # xamin.mc_gz_to_csv()
-    preprocessing.get_aliases()
+    preprocessing.canonicalize_galaxies()
 
 
 def mine_gz():
