@@ -4,7 +4,7 @@ source activate galana
 conda install -y --quiet --yes \
     'numpy' \
     'pandas' \
-    'tensorflow' \
+    'tensorflow-gpu' \
     'pytest' \
     'pytest-cov' \
     'keras' \
