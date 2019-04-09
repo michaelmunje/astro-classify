@@ -1,23 +1,98 @@
-from keras.models import Model
 from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator as IDG
-from keras.layers import Dense, Activation, Flatten, Dropout, BatchNormalization, Input
+from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D
-from keras import regularizers, optimizers
+from keras.applications import inception_v3
+from keras.optimizers import Adam
+from keras.callbacks import ModelCheckpoint
+from keras.models import model_from_json, Model
 import pandas as pd
 import numpy as np
 import os
 
 
-test_image_path = os.getcwd() + '/data/kaggle/images_test_rev1/'
-test_image_files = os.listdir(test_image_path)
-train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
-train_image_files = os.listdir(train_image_path)
-train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
-test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
+test_image_path = ""
+test_image_files = ""
+train_image_path = ""
+train_image_files = ""
+train_solutions = ""
+test_file = ""
+output_model_file = ""
+output_model_weights = ""
+checkpoint_path = ""
 
-df_headers = list()
-model = Model()
+
+def populate_paths():
+    test_image_path = os.getcwd() + '/data/kaggle/images_test_rev1/'
+    test_image_files = os.listdir(test_image_path)
+    train_image_path = os.getcwd() + '/data/kaggle/images_training_rev1/'
+    train_image_files = os.listdir(train_image_path)
+    train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
+    test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
+    output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
+    output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'
+    checkpoint_path = "data/kaggle/checkpoint-{epoch:02d}-{val_acc:.2f}.hdf5"
+
+
+def calc_conf_matrix(y_pred, y_actual):
+    conf_matrix = np.zeros((y_pred.size(), y_pred.size()))
+
+    for pred_row, actual_row  in zip(y_pred, y_actual):
+        conf_matrix[np.argmax(pred_row), np.argmax(actual_row)] += 1
+
+    return conf_matrix
+
+
+def eval_metrics():
+    populate_paths()
+
+    # Model reconstruction from JSON file
+    with open(output_model_file, 'r') as f:
+        model = model_from_json(f.read())
+
+    # Load weights into the new model
+    model.load_weights(output_model_weights)
+
+    traindf = read_galaxy_zoo(train_solutions)
+
+    traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
+    df_headers = list(traindf.columns)
+
+    datagen = IDG(rescale=1./255., validation_split=0.20)
+
+    # Create generators
+    train_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="training",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(424, 424))
+
+    valid_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="validation",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(424, 424))
+
+    STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
+
+
+    y_pred = model.evaluate_generator(generator=valid_generator,
+                        steps=STEP_SIZE_VALID)
+
+    valid_generator.split
+
+
+    print(calc_conf_matrix())
 
 
 def read_galaxy_zoo(filepath):
@@ -28,7 +103,6 @@ def read_galaxy_zoo(filepath):
     df['Spiral'] = df['Class1.2'] * df['Class2.2']
     df['Irregular'] = df['Class6.1'] * (df['Class1.1'] + (df['Class1.2'] * df['Class2.1']))
     df['Elliptical'] = df['Class6.2'] * (df['Class1.1'] + (df['Class1.2'] * df['Class2.1']))
-
     df['Other'] = 1 - df['Elliptical'] - df['Irregular'] - df['Spiral']
 
     df = df.drop(columns=['Class1.1', 'Class1.2', 'Class1.3', 'Class2.1',
@@ -40,6 +114,10 @@ def read_galaxy_zoo(filepath):
             'Class10.2', 'Class10.3', 'Class11.1', 'Class11.2', 'Class11.3', 'Class11.4',
             'Class11.5', 'Class11.6'])
 
+    df['Type'] = df.loc[:, 'Spiral':'Other'].idxmax(axis=1)
+
+    df = df.drop(columns=['Spiral', 'Elliptical', 'Irregular', 'Other'])
+
     return df
 
 
@@ -47,125 +125,104 @@ def append_ext(fn):
     return fn + ".jpg"
 
 
-def generator_wrapper(generator):
-    for batch_x, batch_y in generator:
-        yield (batch_x, [batch_y[:, i] for i in range(len(df_headers)-1)])
+def construct_transfer_model():
+    model = Sequential([
+        Cropping2D(cropping=((64, 63), (64, 63)), input_shape=[424, 424, 3]),
+        inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg'),
+        Dense(1024, activation='relu'),
+        Dense(1024, activation='relu'),
+        Dense(512, activation='relu'),
+        Dense(4, activation='softmax')
+    ])
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(lr=0.000001),
+                  metrics=['accuracy'])
+
+    return model
 
 
-def construct_model(df_headers):
-    # inp = Input(shape=(424,424,3))
-    # x = Conv2D(32, (3, 3), padding = 'same')(inp)
-    # x = Activation('relu')(x)
-    # x = Conv2D(32, (3, 3))(x)
-    # x = Activation('relu')(x)
-    # x = MaxPooling2D(pool_size = (2, 2))(x)
-    # x = Dropout(0.25)(x)
-    # x = Conv2D(64, (3, 3), padding = 'same')(x)
-    # x = Activation('relu')(x)
-    # x = Conv2D(64, (3, 3))(x)
-    # x = Activation('relu')(x)
-    # x = MaxPooling2D(pool_size = (2, 2))(x)
-    # x = Dropout(0.25)(x)
-    # x = Flatten()(x)
-    # x = Dense(512)(x)
-    # x = Activation('relu')(x)
-    # x = Dropout(0.5)(x)
-    #
-    # outputs = []
-    # losses = ['binary_crossentropy']*(len(df_headers)-1)
-    # for _ in range(len(df_headers)-1):
-    #     outputs.append(Dense(1, activation='sigmoid')(x))
-    # model = Model(inp, outputs)
-    # model.compile(optimizers.rmsprop(lr=0.0001,
-    #                                  decay=1e-6),
-    #               loss=losses,
-    #               metrics=["accuracy"])
-    #
-    # return model
-
+def construct_model():
     model = Sequential([
         Cropping2D(cropping=((100, 100), (100, 100)), input_shape=[424, 424, 3]),
         Conv2D(32, (3, 3), activation='relu'),
-        MaxPooling2D(pool_size=(2, 2)),
         Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Conv2D(64, (3, 3), activation='relu'),
         Conv2D(64, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
         Flatten(),
-        Dense(64, activation='relu'),
+        Dense(512, activation='relu'),
         Dropout(0.5),
         Dense(4, activation='softmax')
     ])
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='Adadelta',
+                  optimizer='Adam',
                   metrics=['accuracy'])
     
     return model
 
 
-def train_model():
-
+def train_model(transfer=False):
+    populate_paths()
     traindf = read_galaxy_zoo(train_solutions)
-    testdf = read_galaxy_zoo(test_file)
 
     traindf["GalaxyID"] = traindf["GalaxyID"].apply(append_ext)
-    testdf["GalaxyID"] = testdf["GalaxyID"].apply(append_ext)
     df_headers = list(traindf.columns)
-    test_headers = list(testdf.columns)
 
     datagen = IDG(rescale=1./255., validation_split=0.20)
-    # test_datagen = IDG(rescale=1./255.)
 
     # Create generators
-    train_generator=datagen.flow_from_dataframe(
+    train_generator = datagen.flow_from_dataframe(
         dataframe=traindf,
         directory=train_image_path,
         x_col=df_headers[0],
-        y_col=df_headers[1:],
+        y_col=df_headers[1],
         subset="training",
+        class_mode='categorical',
+        batch_size=24,
         seed=42,
-        class_mode='multi_output',
         target_size=(424, 424))
 
-    valid_generator=datagen.flow_from_dataframe(
+    valid_generator = datagen.flow_from_dataframe(
         dataframe=traindf,
         directory=train_image_path,
         x_col=df_headers[0],
-        y_col=df_headers[1:],
+        y_col=df_headers[1],
         subset="validation",
+        class_mode='categorical',
+        batch_size=24,
         seed=42,
-        class_mode='multi_output',
         target_size=(424, 424))
-    #
-    # test_generator = test_datagen.flow_from_dataframe(
-    #     dataframe=testdf,
-    #     directory=test_image_path,
-    #     x_col=test_headers[0],
-    #     y_col=test_headers[1:],
-    #     batch_size=32,
-    #     seed=42,
-    #     shuffle=False,
-    #     class_mode=None,
-    #     target_size=(424, 424))
 
-    model = construct_model(df_headers)
+    if transfer:
+        model = construct_transfer_model()
+    else:
+        model = construct_model()
 
-    # Train the model
     STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
-    model.fit_generator(generator=generator_wrapper(train_generator),
+
+    print("Training model...")
+
+    checkpoint = ModelCheckpoint(checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    callbacks_list = [checkpoint]
+
+    model.fit_generator(generator=train_generator,
                         steps_per_epoch=STEP_SIZE_TRAIN,
-                        validation_data=generator_wrapper(valid_generator),
+                        validation_data=valid_generator,
                         validation_steps=STEP_SIZE_VALID,
-                        epochs=1,
-                        verbose=2)
+                        callbacks=callbacks_list,
+                        epochs=30)
 
-    # STEP_SIZE_TEST = test_generator.n//test_generator.batch_size
-    # # Predict Model
-    # test_generator.reset()
-    # pred = model.predict_generator(test_generator,
-    #                               steps=STEP_SIZE_TEST,
-    #                               verbose=1)
+    model_json = model.to_json()
+    with open(output_model_file, "w") as json_file:
+        json_file.write(model_json)
 
+    model.save_weights(output_model_weights, overwrite=True)
 
+    print("Saved model to: " + output_model_file)
+    print("Saved weights to: " + output_model_weights)

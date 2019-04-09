@@ -71,6 +71,8 @@ if __name__ == '__main__':
         get_all_mining_data()
     elif system_arguments == "Train Model":
         models.train_model()
+    elif system_arguments == "Train Transfer Model":
+        models.train_model(transfer=True)
     else:
         progress = load_progress()
         if progress is None:
