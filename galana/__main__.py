@@ -2,7 +2,7 @@ import pickle
 import os
 import sys
 import xamin
-import ned
+import preprocessing
 import models
 
 
@@ -69,7 +69,7 @@ def get_all_mining_data():
 def get_gz():
     # xamin.multi_core_download()
     # xamin.mc_gz_to_csv()
-    ned.get_list_of_objects()
+    preprocessing.get_aliases()
 
 
 def mine_gz():
