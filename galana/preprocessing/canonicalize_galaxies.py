@@ -36,7 +36,7 @@ def canonicalize_galaxies():
 
             if not found_key:
                 ids = Simbad.query_objectids(name)
-                downloaded_names[name] = [np.asarray(ids.as_array(), dtype=str)][0] if ids else []
+                downloaded_names[name] = list(np.asarray(ids.as_array(), dtype=str)) if ids else []
             
         df.to_csv(table_csv)
 
