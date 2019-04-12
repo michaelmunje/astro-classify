@@ -1,7 +1,7 @@
 ARG BASE_CONTAINER=luke035/nvidia-anaconda-docker
 FROM $BASE_CONTAINER
 
-LABEL maintainer="Michael Munje"
+LABEL maintainer="Michael Munje & Danster"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -22,5 +22,7 @@ RUN apt-get update && \
     mkdir .astropy && \
     chmod 667 .astropy && \
     apt-get install -y git && \
+    apt-get install -y libsm6 libxext6 libxrender-dev && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git
+    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
+    pip install opencv-python
