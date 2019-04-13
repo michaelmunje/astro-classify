@@ -5,7 +5,7 @@ import numpy as np
 image_path = os.getcwd() + '/252342.jpg'
 
 # Minimum percentage of pixels of same hue to consider dominant colour
-MIN_PIXEL_CNT_PCT = (1.0/5.0)
+MIN_PIXEL_CNT_PCT = (1.0/20.0)
 
 image = cv2.imread(image_path)
 if image is None:
