@@ -2,6 +2,8 @@ import pickle
 import os
 import sys
 import xamin
+import models
+import preprocessing
 
 
 root_dir = os.getcwd()
@@ -65,8 +67,16 @@ def get_all_mining_data():
 
 
 if __name__ == '__main__':
-    if ' '.join(sys.argv[1:]) == "Get All Mining Data":
+    system_arguments = ' '.join(sys.argv[1:])
+    if system_arguments == "Get All Mining Data":
         get_all_mining_data()
+    elif system_arguments == "Train Model":
+        model_paths = models.initialize_default_paths()
+        preprocessing.process_kaggle(model_paths.training_solutions, model_paths.clean_training_solutions)
+        models.train_model(model_paths)
+    elif system_arguments == "Train Transfer Model":
+        model_paths = models.initialize_default_paths()
+        models.train_model(model_paths, transfer=True)
     else:
         progress = load_progress()
         if progress is None:
