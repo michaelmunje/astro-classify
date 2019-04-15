@@ -1,4 +1,6 @@
 import pandas as pd
+import pathlib as pl
+import os
 
 
 def append_ext(fn):
@@ -30,5 +32,7 @@ def process_kaggle(filepath, out_filepath):
     df['Type'] = df.loc[:, 'Spiral':'Other'].idxmax(axis=1)
 
     df = df.drop(columns=['Spiral', 'Elliptical', 'Irregular', 'Other'])
+
+    pl.Path(os.path.dirname(out_filepath)).mkdir(parents=True, exist_ok=True)
 
     df.to_csv(out_filepath)
