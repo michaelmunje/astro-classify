@@ -1,5 +1,7 @@
 import tensorflow as tf
 from PIL import Image, ImageFilter
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import os
 import random
 import numpy as np
@@ -41,7 +43,7 @@ def pair_lists(list1, list2):
     
     return temp
 
-def recolor_image(image_path, new_path):
+def recolor_image_old(image_path, new_path):
     pic = Image.open(image_path)
     if pic.mode in ('RGBA', 'LA'):
         # background color default to black
@@ -62,6 +64,25 @@ def recolor_image(image_path, new_path):
     im2.save(new_path, quality=95)
     print('Saved this path', new_path)
 
+def recolor_image(image_path, new_path):
+    image = mpimg.imread(image_path)
+
+    # Create a TensorFlow Variable
+    x = tf.Variable(image, name='x', dtype=tf.float32)
+
+    model = tf.global_variables_initializer()
+
+    with tf.Session() as session:
+        noise = tf.random_normal(shape=tf.shape(x), mean=0.0, stddev=1.0, dtype=tf.float32)
+        x = tf.add(x, noise)
+        session.run(model)
+        result = session.run(x)
+
+    plt.imshow(result)
+    plt.show()
+
+
+
 def temp():
     test_list = sorted(os.listdir(old_test_path))
     train_list = sorted(os.listdir(old_train_path))
@@ -78,9 +99,10 @@ def temp():
     pair_test = pair_lists(test_paths, new_test_paths)
     pair_train = pair_lists(train_paths, new_train_paths) 
 
-    pool = Pool()
-    pool.starmap(recolor_image, pair_test)
-    pool.starmap(recolor_image, pair_train)
+    # pool = Pool()
+    # pool.starmap(recolor_image, pair_test)
+    # pool.starmap(recolor_image, pair_train)
+    recolor_image(test_paths[0], new_test_paths[0])
 
 
 
