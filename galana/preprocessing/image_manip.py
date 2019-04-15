@@ -64,24 +64,38 @@ def recolor_image_old(image_path, new_path):
     im2.save(new_path, quality=95)
     print('Saved this path', new_path)
 
-def recolor_image(image_path, new_path):
+def noisy_image(image_path, new_path):
     image = mpimg.imread(image_path)
-
+    
+    tf.random.set_random_seed(1234)
     # Create a TensorFlow Variable
     x = tf.Variable(image, name='x', dtype=tf.float32)
 
     model = tf.global_variables_initializer()
 
     with tf.Session() as session:
-        noise = tf.random_normal(shape=tf.shape(x), mean=0.0, stddev=1.0, dtype=tf.float32)
-        x = tf.add(x, noise)
+        # noise = tf.random_normal(shape=tf.shape(x), mean=0.0, stddev=0.0, dtype=tf.float32)
+        noise = tf.random_uniform(shape=tf.shape(x), minval=0, maxval=0.75, dtype=tf.float32)
+        x = tf.multiply(x, noise)
         session.run(model)
         result = session.run(x)
 
-    plt.imshow(result)
-    plt.show()
+    plt.imsave(new_path, result)
 
+def recolor_image(image_path, new_path):
+    image = Image.open(image_path)
+    
+    random.seed(1234)
+    model = tf.global_variables_initializer()
 
+    with tf.Session() as session:
+        rand = random.uniform(0, 1)
+        image = tf.image.adjust_hue(image, rand)
+        tf_img = tf.image.convert_image_dtype(image, tf.float32)
+        session.run(model)
+        result = session.run(tf_img)
+
+    plt.imsave(new_path, result)
 
 def temp():
     test_list = sorted(os.listdir(old_test_path))
@@ -102,7 +116,7 @@ def temp():
     # pool = Pool()
     # pool.starmap(recolor_image, pair_test)
     # pool.starmap(recolor_image, pair_train)
-    recolor_image(test_paths[0], new_test_paths[0])
+    recolor_image(test_paths[11], new_test_paths[11])
 
 
 
