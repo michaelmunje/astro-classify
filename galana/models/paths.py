@@ -46,7 +46,7 @@ def initialize_custom_paths(test_images_p, train_images_p, train_sol, clean_sols
     if os.path.isfile(model_paths.train_image_path):
         model_paths.train_image_files = os.listdir(model_paths.train_image_path)
     else:
-        model_paths.test_image_files = []
+        model_paths.train_image_files = []
 
     model_paths.train_solutions = train_sol
     model_paths.clean_train_solutions = clean_sols
