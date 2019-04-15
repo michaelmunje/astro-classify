@@ -243,3 +243,5 @@ docker/Dockerfiles/current_installs/test/Dockerfile
 tests/preprocessing/output
 
 wip/
+
+docker/Dockercache
