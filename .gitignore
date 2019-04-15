@@ -245,6 +245,3 @@ tests/preprocessing/output
 wip/
 
 docker/Dockercache
-
-*.csv
-*.gz
