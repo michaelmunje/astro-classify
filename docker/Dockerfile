@@ -13,6 +13,7 @@ RUN apt-get update && \
     'pytest' \
     'keras' \
     'pytest-cov' \
+    'matplotlib' \
     'pillow' \
     'jupyter' && \
     pip install 'jupyter-tensorboard' && \
