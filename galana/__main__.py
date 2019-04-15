@@ -3,6 +3,7 @@ import os
 import sys
 import xamin
 import models
+import preprocessing
 
 
 root_dir = os.getcwd()
@@ -70,9 +71,12 @@ if __name__ == '__main__':
     if system_arguments == "Get All Mining Data":
         get_all_mining_data()
     elif system_arguments == "Train Model":
-        models.train_model()
+        model_paths = models.initialize_default_paths()
+        preprocessing.process_kaggle(model_paths.training_solutions, model_paths.clean_training_solutions)
+        models.train_model(model_paths)
     elif system_arguments == "Train Transfer Model":
-        models.train_model(transfer=True)
+        model_paths = models.initialize_default_paths()
+        models.train_model(model_paths, transfer=True)
     else:
         progress = load_progress()
         if progress is None:
