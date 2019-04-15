@@ -248,3 +248,4 @@ docker/Dockercache
 
 *.csv
 *.gz
+*.jpg
