@@ -66,8 +66,7 @@ def get_all_mining_data():
     xamin.get_all_raw()
 
 def manip_images():
-    preprocessing.temp()
-
+    preprocessing.augment_images()
 
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
