@@ -16,12 +16,9 @@ new_train_path = kaggle_path + '/images_manip_train'
 pl.Path(new_test_path).mkdir(parents=True, exist_ok=True)
 pl.Path(new_train_path).mkdir(parents=True, exist_ok=True)
 
-def apply_full_path(f_list, path):
-    temp = []
-    for f in f_list:
-        temp.append(path + '/' + f)
-    
-    return temp
+def apply_full_path(path, f_list):
+    lamb = lambda p,f : p + '/' + f
+    return list(map(lamb, [path]*len(f_list), f_list))
 
 def construct_new_path_list(start_f, list_size, path):
     temp = []
@@ -90,33 +87,55 @@ def rotate_image(image_path, new_path, rand):
     image.save(new_path)
     print('Rotate', new_path)
 
+def filter_image(image_path, new_path, f_type):
+    image = Image.open(image_path)
+    if f_type == 0:
+        image.filter(ImageFilter.GaussianBlur(3))
+    elif f_type == 1:
+        image.filter(ImageFilter.MedianFilter(3))
+    elif f_type == 2:
+        image.filter(ImageFilter.ModeFilter(3))
+    else:
+        print('Incorrect value assinged')
+    image.save(new_path)
+    print('Filter', new_path)
+
+def handle_images():
+    pass
+
 def augment_images():
     test_list = sorted(os.listdir(old_test_path))
     train_list = sorted(os.listdir(old_train_path))
+
     test_size = len(test_list)
     train_size = len(train_list)
 
     test_name_start = int(test_list[-1].split('.')[0]) + 1
     train_name_start = int(train_list[-1].split('.')[0]) + 1
     
-    test_paths = apply_full_path(test_list, old_test_path)
-    train_paths = apply_full_path(train_list, old_train_path)
+    test_paths = apply_full_path(old_test_path, test_list)
+    train_paths = apply_full_path(old_train_path, train_list)
 
     new_test_paths = construct_new_path_list(test_name_start, test_size*3, new_test_path)
     new_train_paths = construct_new_path_list(train_name_start, train_size*3, new_train_path)
     
-    random.seed(1234)
+    np.random.seed(1234)
     rand_hue_tests = np.random.uniform(0, 1.0, size=test_size)
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
     rand_rot_tests = np.random.uniform(0, 360.0, size=test_size)
     rand_rot_trains = np.random.uniform(0, 360.0, size=train_size)
+    rand_filter_tests = np.random.randint(0, 3, size=test_size)
+    rand_filter_trains = np.random.randint(0, 3, size=train_size)
     
     zip_color_test = list(zip(test_paths, new_test_paths[:test_size], rand_hue_tests))
     zip_color_train = list(zip(train_paths, new_train_paths[:train_size], rand_hue_trains))
     zip_rot_test = list(zip(test_paths, new_test_paths[test_size:test_size*2], rand_rot_tests))
     zip_rot_train = list(zip(train_paths, new_train_paths[train_size:train_size*2], rand_rot_trains))
+    zip_filt_test = list(zip(test_paths, new_test_paths[test_size*2:test_size*3], rand_filter_tests))
+    zip_filt_train = list(zip(train_paths, new_train_paths[train_size*2:train_size*3], rand_filter_trains))
     
     pool = Pool()
+    pool.starmap(filter_image, zip_filt_test)
     pool.starmap(recolor_image, zip_color_test)
     pool.starmap(recolor_image, zip_color_train)
 
