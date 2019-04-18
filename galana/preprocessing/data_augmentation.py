@@ -16,7 +16,7 @@ solutions_csv = kaggle_path + '/training_solutions_rev1.csv'
 comb_csv = kaggle_path + '/updated_solutions.csv'
 pl.Path(new_train_path).mkdir(parents=True, exist_ok=True)
 
-NUM_MANIPS = 2
+NUM_MANIPS = 3
 
 def apply_full_path(path, f_list):
     lamb = lambda p,f : p + '/' + f
@@ -108,7 +108,7 @@ def handle_images():
     train_name_start = int(train_list[-1].split('.')[0]) + 1
 
     hcs = handle_csvs(train_name_start, NUM_MANIPS)
-    hcs.to_csv(comb_csv)
+    hcs.to_csv(comb_csv, index=False)
 
     train_paths = apply_full_path(old_train_path, train_list)
 
@@ -123,7 +123,7 @@ def handle_images():
     zip_rot_train = list(zip(train_paths, new_train_paths[train_size:train_size*2], rand_rot_trains))
     zip_filt_train = list(zip(train_paths, new_train_paths[train_size*2:train_size*3], rand_filter_trains))
 
-    return zip_rot_train, zip_filt_train
+    return zip_color_train, zip_rot_train, zip_filt_train
 
 def handle_csvs(start, num_of_manips):
     orig_df = pd.read_csv(solutions_csv)
@@ -141,12 +141,12 @@ def handle_csvs(start, num_of_manips):
     return pd.concat(new_dfs)
 
 def augment_images():
-    rot_trains, filt_trains = handle_images()
+    color_train, rot_trains, filt_trains = handle_images()
     
     pool = Pool()
+    pool.starmap(recolor_image, color_train)
     pool.starmap(filter_image, filt_trains)
-    # pool.starmap(recolor_image, zip_color_test)
-    # pool.starmap(recolor_image, zip_color_train)
+    pool.starmap(rotate_image, rot_trains)
 
 
 
