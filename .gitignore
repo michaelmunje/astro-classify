@@ -233,6 +233,8 @@ fabric.properties
 utils/xamin\.jar
 
 data/mine/raw/
+data/mine/tables
+data/mine/gz_tables
 
 docker/Dockerfiles/current_installs/machine-learning/Dockerfile
 
@@ -246,6 +248,7 @@ wip/
 
 docker/Dockercache
 
-*.csv
-*.gz
-*.jpg
+data/kaggle/updated_solutions\.csv
+
+tests/process_image/*.jpg
+tests/process_image/bbox
