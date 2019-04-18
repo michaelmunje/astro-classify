@@ -7,14 +7,16 @@ import random
 import numpy as np
 import pathlib as pl
 from multiprocessing import Pool
+import pandas as pd
 
 kaggle_path = os.getcwd() + '/data/kaggle'
-old_test_path = kaggle_path + '/images_test_rev1'
 old_train_path = kaggle_path + '/images_training_rev1'
-new_test_path = kaggle_path + '/images_manip_test'
 new_train_path = kaggle_path + '/images_manip_train'
-pl.Path(new_test_path).mkdir(parents=True, exist_ok=True)
+solutions_csv = kaggle_path + '/training_solutions_rev1.csv'
+comb_csv = kaggle_path + '/updated_solutions.csv'
 pl.Path(new_train_path).mkdir(parents=True, exist_ok=True)
+
+NUM_MANIPS = 2
 
 def apply_full_path(path, f_list):
     lamb = lambda p,f : p + '/' + f
@@ -26,7 +28,7 @@ def construct_new_path_list(start_f, list_size, path):
         temp.append(path + '/' + str(start_f) + '.jpg')
         start_f += 1
     
-    return temp
+    return temp, start_f
 
 def recolor_image_old(image_path, new_path):
     pic = Image.open(image_path)
@@ -101,43 +103,50 @@ def filter_image(image_path, new_path, f_type):
     print('Filter', new_path)
 
 def handle_images():
-    pass
-
-def augment_images():
-    test_list = sorted(os.listdir(old_test_path))
     train_list = sorted(os.listdir(old_train_path))
-
-    test_size = len(test_list)
     train_size = len(train_list)
-
-    test_name_start = int(test_list[-1].split('.')[0]) + 1
     train_name_start = int(train_list[-1].split('.')[0]) + 1
-    
-    test_paths = apply_full_path(old_test_path, test_list)
+
+    hcs = handle_csvs(train_name_start, NUM_MANIPS)
+    hcs.to_csv(comb_csv)
+
     train_paths = apply_full_path(old_train_path, train_list)
 
-    new_test_paths = construct_new_path_list(test_name_start, test_size*3, new_test_path)
-    new_train_paths = construct_new_path_list(train_name_start, train_size*3, new_train_path)
+    new_train_paths, _ = construct_new_path_list(train_name_start, train_size*NUM_MANIPS, new_train_path)
     
     np.random.seed(1234)
-    rand_hue_tests = np.random.uniform(0, 1.0, size=test_size)
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
-    rand_rot_tests = np.random.uniform(0, 360.0, size=test_size)
     rand_rot_trains = np.random.uniform(0, 360.0, size=train_size)
-    rand_filter_tests = np.random.randint(0, 3, size=test_size)
     rand_filter_trains = np.random.randint(0, 3, size=train_size)
     
-    zip_color_test = list(zip(test_paths, new_test_paths[:test_size], rand_hue_tests))
     zip_color_train = list(zip(train_paths, new_train_paths[:train_size], rand_hue_trains))
-    zip_rot_test = list(zip(test_paths, new_test_paths[test_size:test_size*2], rand_rot_tests))
     zip_rot_train = list(zip(train_paths, new_train_paths[train_size:train_size*2], rand_rot_trains))
-    zip_filt_test = list(zip(test_paths, new_test_paths[test_size*2:test_size*3], rand_filter_tests))
     zip_filt_train = list(zip(train_paths, new_train_paths[train_size*2:train_size*3], rand_filter_trains))
+
+    return zip_rot_train, zip_filt_train
+
+def handle_csvs(start, num_of_manips):
+    orig_df = pd.read_csv(solutions_csv)
+    orig_df = orig_df.sort_values(by=['GalaxyID'])
+    df_size = len(orig_df.index)
+
+    new_dfs = []
+    new_dfs.append(orig_df)
+    for n in range(num_of_manips):
+        temp = orig_df.copy()
+        s = start + (start*n)
+        temp['GalaxyID'] = np.arange(s, s+df_size)
+        new_dfs.append(temp)
+    
+    return pd.concat(new_dfs)
+
+def augment_images():
+    rot_trains, filt_trains = handle_images()
     
     pool = Pool()
-    pool.starmap(filter_image, zip_filt_test)
-    pool.starmap(recolor_image, zip_color_test)
-    pool.starmap(recolor_image, zip_color_train)
+    pool.starmap(filter_image, filt_trains)
+    # pool.starmap(recolor_image, zip_color_test)
+    # pool.starmap(recolor_image, zip_color_train)
 
 
 
