@@ -4,3 +4,4 @@ from .get import run_table_query
 from .helpers import get_inline_script_output
 from .helpers import get_script_output
 from .install import install
+from .get_downloads import download_tables, multi_core_download, mc_gz_to_csv

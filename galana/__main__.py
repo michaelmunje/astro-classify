@@ -2,16 +2,17 @@ import pickle
 import os
 import sys
 import xamin
-import models
 import preprocessing
+import models
 
 
 root_dir = os.getcwd()
 data_dir = os.path.abspath(root_dir + "/data/")
-pickle_path = data_dir + "/prog.pickle"
+mine_prog_path = data_dir + "/mine_prog.pickle"
+ml_prog_path = data_dir + "/ml_prog.pickle"
 
 
-def load_progress():
+def load_progress(pickle_path):
     if (os.path.isfile(pickle_path)) is True:
         pickle_to_import = open(pickle_path, "rb")
         return pickle.load(pickle_to_import)
@@ -19,57 +20,44 @@ def load_progress():
         return None
 
 
-def save_progress(phase_num):
+def save_progress(phase_num, pickle_path):
     prog = {"Progress": phase_num}
     pickle_to_export = open(pickle_path, "wb")
     pickle.dump(prog, pickle_to_export)
     pickle_to_export.close()
 
 
-def phase_one_data_retrieval():
+def mine_phase_one_data_retrieval():
     print("Retrieving all data...")
-    xamin.get_all_raw()
-    save_progress(2)
-    phase_two_data_cleaning()
+    xamin.multi_core_download()
+    save_progress(2, mine_prog_path)
+    mine_phase_two_data_preprocessing()
 
 
-def phase_two_data_cleaning():
-
-    save_progress(3)
-    phase_three_further_data()
-
-
-def phase_three_further_data():
-
-    save_progress(4)
-    phase_four_logs()
+def mine_phase_two_data_preprocessing():
+    print("Cleaning data...")
+    xamin.mc_gz_to_csv()
+    preprocessing.canonicalize_galaxies()
+    save_progress(3, mine_prog_path)
+    mine_phase_three_clustering()
 
 
-def phase_four_logs():
-
-    save_progress(5)
-    phase_five_get_sdfs()
-
-
-def phase_five_get_sdfs():
-
-    save_progress(6)
-    final_phase()
+def mine_phase_three_clustering():
+    # save_progress(5, mine_prog_path)
+    # mine_final_phase()
+    pass
 
 
-def final_phase():
+def mine_final_phase():
     print("You have finished running the data pipeline. Results are available at: data/results/")
-
-
-def get_all_mining_data():
-    xamin.install()
-    xamin.get_all_raw()
 
 
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
-    if system_arguments == "Get All Mining Data":
-        get_all_mining_data()
+
+    if system_arguments == "Download Data":
+        mine_phase_one_data_retrieval()
+
     elif system_arguments == "Train Model":
         model_paths = models.initialize_default_paths()
         preprocessing.process_kaggle(model_paths.training_solutions, model_paths.clean_training_solutions)
@@ -77,20 +65,36 @@ if __name__ == '__main__':
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()
         models.train_model(model_paths, transfer=True)
-    else:
-        progress = load_progress()
+    elif system_arguments == "Mine":
+        progress = load_progress(mine_prog_path)
         if progress is None:
-            phase_one_data_retrieval()
+            mine_phase_one_data_retrieval()
         else:
             num = progress['Progress']
             switcher = {
-                1: phase_one_data_retrieval,
-                2: phase_two_data_cleaning,
-                3: phase_three_further_data,
-                4: phase_four_logs,
-                5: phase_five_get_sdfs,
-                7: final_phase
+                1: mine_phase_one_data_retrieval,
+                2: mine_phase_two_data_preprocessing(),
+                3: mine_phase_three_clustering(),
+                4: mine_final_phase
             }
 
             current_phase = switcher.get(num, lambda: "Corrupt pickle.")
             current_phase()
+
+    # elif system_arguments == "ML":
+    #     progress = load_progress(ml_prog_path)
+    #     if progress is None:
+    #         ml_phase_one_data_retrieval()
+    #     else:
+    #         num = progress['Progress']
+    #         switcher = {
+    #             1: phase_one_data_retrieval,
+    #             2: phase_two_data_cleaning,
+    #             3: phase_three_further_data,
+    #             4: phase_four_logs,
+    #             5: phase_five_get_sdfs,
+    #             7: final_phase
+    #         }
+    #
+    #         current_phase = switcher.get(num, lambda: "Corrupt pickle.")
+    #         current_phase()
