@@ -27,7 +27,7 @@ elif [[ $1 == 'jupyter' ]]
 then
 docker run -ti --rm --net=host -v $(pwd):/home/jovyan/:rw -u `id -u $USER`:`id -g $USER` galana bash -c "rm -rf /home/joyvan/work;jupyter notebook"
 else
-docker run -ti --rm --net=host -v $(pwd):/galana:rw galana bash -c "cd galana; bash"
+docker run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; bash"
 fi
 
 
