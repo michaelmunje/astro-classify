@@ -4,3 +4,6 @@ omit =
     galana/xamin/get_all.py
     galana/xamin/get_all_names.py
     galana/xamin/get.py
+    galana/models/construct.py
+    galana/models/evaluate.py
+
