@@ -7,6 +7,7 @@ conda install -y --quiet --yes \
     'tensorflow-gpu' \
     'pytest' \
     'pytest-cov' \
+    'matplotlib' \
     'keras' \
     'pillow'
 conda clean -tipsy
