@@ -20,17 +20,11 @@ NUM_MANIPS = 3
 
 
 def apply_full_path(path, f_list):
-    lamb = lambda p, f: p + '/' + f
-    return list(map(lamb, [path] * len(f_list), f_list))
-    # return [lambda f: path + '/' + f for f in f_list]
+    return [path + '/' + f for f in f_list]
 
 
 def construct_new_path_list(start_f, list_size, path):
-    temp = []
-    for i in range(list_size):
-        temp.append(path + '/' + str(start_f + i) + '.jpg')
-
-    return temp
+    return [path + '/' + str(start_f + i) + '.jpg' for i in range(list_size)]
 
 
 def recolor_image(image_path, new_path, rand):
