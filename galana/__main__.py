@@ -56,12 +56,14 @@ def mine_final_phase():
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
 
+
 def manip_images():
     preprocessing.augment_images()
 
+
 if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
-    if system_arguments == "Mine Data":
+    if system_arguments == "Manip Data":
         manip_images()
     elif system_arguments == "Train Model":
         model_paths = models.initialize_default_paths()

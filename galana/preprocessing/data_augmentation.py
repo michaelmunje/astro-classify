@@ -20,7 +20,9 @@ NUM_MANIPS = 3
 
 
 def apply_full_path(path, f_list):
-    return [map(lambda f: path + '/' + f for f in f_list)]
+    lamb = lambda p, f: p + '/' + f
+    return list(map(lamb, [path] * len(f_list), f_list))
+    # return [lambda f: path + '/' + f for f in f_list]
 
 
 def construct_new_path_list(start_f, list_size, path):
@@ -114,3 +116,5 @@ def augment_images():
     pool.starmap(recolor_image, color_train)
     pool.starmap(filter_image, filt_trains)
     pool.starmap(rotate_image, rot_trains)
+
+    (os.rename(new_train_path + '/' + f, old_train_path + '/' + f) for f in os.listdir(new_train_path))
