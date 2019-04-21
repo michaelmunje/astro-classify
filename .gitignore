@@ -249,6 +249,7 @@ wip/
 docker/Dockercache
 
 data/kaggle/updated_solutions\.csv
+data/kaggle/images_manip_train (copy)/
 
 tests/process_image/*.jpg
 tests/process_image/bbox
