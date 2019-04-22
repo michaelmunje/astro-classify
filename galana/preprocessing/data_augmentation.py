@@ -12,18 +12,27 @@ BASE_COLOR_PATH = ''
 BASE_ROTATE_PATH = ''
 BASE_FILTER_PATH = ''
 
+sess = None
+model = None
+
+
+def init():
+    global sess
+    global model
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    model = tf.global_variables_initializer()
+    sess = tf.Session(config=config)
+
 
 def recolor_image(image_name, new_image_name, rand):
 
     image = Image.open(BASE_TRAIN_PATH + image_name)
 
-    model = tf.global_variables_initializer()
-
-    with tf.Session() as session:
-        image = tf.image.adjust_hue(image, rand)
-        tf_img = tf.image.convert_image_dtype(image, tf.float32)
-        session.run(model)
-        result = session.run(tf_img)
+    image = tf.image.adjust_hue(image, rand)
+    tf_img = tf.image.convert_image_dtype(image, tf.float32)
+    sess.run(model)
+    result = sess.run(tf_img)
 
     plt.imsave(BASE_COLOR_PATH + new_image_name, result)
     print('Recolor ', new_image_name + ' Original: ' + image_name)
@@ -111,13 +120,11 @@ def augment_images(train_path, sol_path):
     BASE_ROTATE_PATH = augment_paths[1] + '/'
     BASE_FILTER_PATH = augment_paths[2] + '/'
 
-    color_train, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
+    color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
 
-    for img_name, new_img_name, rand in color_train:
-        recolor_image(img_name, new_img_name, rand)
+    pool = Pool(initializer=init)
 
-    pool = Pool()
-
+    pool.starmap(recolor_image, color_trains)
     pool.starmap(rotate_image, rot_trains)
     pool.starmap(filter_image, filt_trains)
 
