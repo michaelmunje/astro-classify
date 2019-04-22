@@ -15,7 +15,8 @@ RUN apt-get update && \
     'pytest-cov' \
     'matplotlib' \
     'pillow' \
-    'jupyter' && \
+    'jupyter' \
+    'tensorflow-gpu' && \
     pip install 'jupyter-tensorboard' && \
     conda install openjdk && \
     conda clean -tipsy && \
