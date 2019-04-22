@@ -61,8 +61,6 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
     hcs = update_solutions(train_name_start, num_of_manips, sol_path, augment_sol_path)
     hcs.to_csv(augment_sol_path, index=False)
 
-    train_paths = [BASE_TRAIN_PATH + '/' + f for f in train_list]
-
     all_augment_paths = [[str(train_name_start + i + train_size * aug_no) +
                           '.jpg' for i in range(train_size * num_of_manips)]
                          for aug_no in range(3)]
@@ -73,9 +71,9 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
     rand_filter_trains = np.random.randint(0, 3, size=train_size)
 
-    zip_col_train = list(zip(train_paths, all_augment_paths[0], rand_hue_trains))
-    zip_rot_train = list(zip(train_paths, all_augment_paths[1], rand_rot_trains))
-    zip_filt_train = list(zip(train_paths, all_augment_paths[2], rand_filter_trains))
+    zip_col_train = list(zip(train_list, all_augment_paths[0], rand_hue_trains))
+    zip_rot_train = list(zip(train_list, all_augment_paths[1], rand_rot_trains))
+    zip_filt_train = list(zip(train_list, all_augment_paths[2], rand_filter_trains))
 
     return zip_col_train, zip_rot_train, zip_filt_train
 
@@ -97,24 +95,23 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
 
 def augment_images(train_path, sol_path):
     NUM_MANIPS = 3
-    base_path = '/'.join(train_path.split('/')[:-1])
+    base_path = '/'.join(train_path.split('/')[:-2])
     augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in ['color', 'rotate', 'filter']]
 
     base_sol_path = '/'.join(sol_path.split('/')[:-1])
     augment_sol_path = base_sol_path + '/augment_' + sol_path.split('/')[-1]
 
-    (pl.Path(augment_path).mkdir(parents=True, exist_ok=True) for augment_path in augment_paths)
+    for aug_path in augment_paths:
+        pl.Path(aug_path).mkdir(parents=True, exist_ok=True)
 
     global BASE_TRAIN_PATH, BASE_COLOR_PATH, BASE_ROTATE_PATH, BASE_FILTER_PATH
 
     BASE_TRAIN_PATH = train_path
-    BASE_COLOR_PATH = augment_paths[0]
-    BASE_ROTATE_PATH = augment_paths[1]
-    BASE_FILTER_PATH = augment_paths[2]
+    BASE_COLOR_PATH = augment_paths[0] + '/'
+    BASE_ROTATE_PATH = augment_paths[1] + '/'
+    BASE_FILTER_PATH = augment_paths[2] + '/'
 
     color_train, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
-
-    print(color_train)
 
     pool = Pool()
     pool.starmap(recolor_image, color_train)
