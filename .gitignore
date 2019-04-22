@@ -253,3 +253,5 @@ data/kaggle/images_manip_train (copy)/
 
 tests/process_image/*.jpg
 tests/process_image/bbox
+
+data/kaggle/augment_training_solutions_rev1\.csv
