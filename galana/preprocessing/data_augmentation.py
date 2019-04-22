@@ -23,6 +23,7 @@ def init():
     config.gpu_options.allow_growth = True
     model = tf.global_variables_initializer()
     sess = tf.Session(config=config)
+    sess.run(model)
 
 
 def recolor_image(image_name, new_image_name, rand):
@@ -31,10 +32,11 @@ def recolor_image(image_name, new_image_name, rand):
 
     image = tf.image.adjust_hue(image, rand)
     tf_img = tf.image.convert_image_dtype(image, tf.float32)
-    sess.run(model)
+
     result = sess.run(tf_img)
 
     plt.imsave(BASE_COLOR_PATH + new_image_name, result)
+
     print('Recolor ', new_image_name + ' Original: ' + image_name)
 
 
@@ -122,7 +124,7 @@ def augment_images(train_path, sol_path):
 
     color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
 
-    pool = Pool(initializer=init)
+    pool = Pool(processes=20, initializer=init)
 
     pool.starmap(recolor_image, color_trains)
     pool.starmap(rotate_image, rot_trains)
