@@ -257,3 +257,5 @@ tests/process_image/bbox
 data/kaggle/augment_training_solutions_rev1\.csv
 
 data/kaggle/train_augment/
+
+core
