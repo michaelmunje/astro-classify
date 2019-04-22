@@ -71,9 +71,9 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
     rand_filter_trains = np.random.randint(0, 3, size=train_size)
 
-    zip_col_train = list(zip(train_list, all_augment_paths[0], rand_hue_trains))
-    zip_rot_train = list(zip(train_list, all_augment_paths[1], rand_rot_trains))
-    zip_filt_train = list(zip(train_list, all_augment_paths[2], rand_filter_trains))
+    zip_col_train = list(zip(train_list[:train_size], all_augment_paths[0], rand_hue_trains))
+    zip_rot_train = list(zip(train_list[train_size:train_size * 2], all_augment_paths[1], rand_rot_trains))
+    zip_filt_train = list(zip(train_list[train_size * 2:train_size * 3], all_augment_paths[2], rand_filter_trains))
 
     return zip_col_train, zip_rot_train, zip_filt_train
 
