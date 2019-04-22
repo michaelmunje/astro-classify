@@ -26,7 +26,7 @@ def recolor_image(image_name, new_image_name, rand):
         result = session.run(tf_img)
 
     plt.imsave(BASE_COLOR_PATH + new_image_name, result)
-    print('Recolor  ', new_image_name + ' Original: ' + image_name)
+    print('Recolor ', new_image_name + ' Original: ' + image_name)
 
 
 def rotate_image(image_name, new_image_name, rand):
@@ -34,7 +34,7 @@ def rotate_image(image_name, new_image_name, rand):
     image = Image.open(BASE_TRAIN_PATH + image_name)
     image = image.rotate(rand)
     image.save(BASE_ROTATE_PATH + new_image_name)
-    print('Rotate  ', new_image_name + ' Original: ' + image_name)
+    print('Rotate ', new_image_name + ' Original: ' + image_name)
 
 
 def filter_image(image_name, new_image_name, f_type):
@@ -50,7 +50,7 @@ def filter_image(image_name, new_image_name, f_type):
         print('Incorrect value assigned')
 
     image.save(BASE_FILTER_PATH + new_image_name)
-    print('Filter  ', new_image_name + ' Original: ' + image_name)
+    print('Filter ', new_image_name + ' Original: ' + image_name)
 
 
 def handle_images(sol_path, augment_sol_path, num_of_manips):
@@ -113,8 +113,11 @@ def augment_images(train_path, sol_path):
 
     color_train, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
 
+    for img_name, new_img_name, rand in color_train:
+        recolor_image(img_name, new_img_name, rand)
+
     pool = Pool()
-    pool.starmap(recolor_image, color_train)
+
     pool.starmap(rotate_image, rot_trains)
     pool.starmap(filter_image, filt_trains)
 
