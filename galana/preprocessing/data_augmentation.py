@@ -7,10 +7,15 @@ import pathlib as pl
 from multiprocessing import Pool
 import pandas as pd
 
+BASE_TRAIN_PATH = ''
+BASE_COLOR_PATH = ''
+BASE_ROTATE_PATH = ''
+BASE_FILTER_PATH = ''
 
-def recolor_image(image_path, new_path, rand):
 
-    image = Image.open(image_path)
+def recolor_image(image_name, new_image_name, rand):
+
+    image = Image.open(BASE_TRAIN_PATH + image_name)
 
     model = tf.global_variables_initializer()
 
@@ -20,21 +25,21 @@ def recolor_image(image_path, new_path, rand):
         session.run(model)
         result = session.run(tf_img)
 
-    plt.imsave(new_path, result)
-    print('Recolor ', new_path)
+    plt.imsave(BASE_COLOR_PATH + new_image_name, result)
+    print('Recolor  ', new_image_name + ' Original: ' + image_name)
 
 
-def rotate_image(image_path, new_path, rand):
+def rotate_image(image_name, new_image_name, rand):
 
-    image = Image.open(image_path)
+    image = Image.open(BASE_TRAIN_PATH + image_name)
     image = image.rotate(rand)
-    image.save(new_path)
-    print('Rotate ', new_path)
+    image.save(BASE_ROTATE_PATH + new_image_name)
+    print('Rotate  ', new_image_name + ' Original: ' + image_name)
 
 
-def filter_image(image_path, new_path, f_type):
+def filter_image(image_name, new_image_name, f_type):
 
-    image = Image.open(image_path)
+    image = Image.open(BASE_TRAIN_PATH + image_name)
     filter_types = [image.filter(ImageFilter.GaussianBlur(3)),
                     image.filter(ImageFilter.MedianFilter(3)),
                     image.filter(ImageFilter.ModeFilter(3))]
@@ -44,22 +49,23 @@ def filter_image(image_path, new_path, f_type):
     else:
         print('Incorrect value assigned')
 
-    image.save(new_path)
-    print('Filter ', new_path)
+    image.save(BASE_FILTER_PATH + new_image_name)
+    print('Filter  ', new_image_name + ' Original: ' + image_name)
 
 
-def handle_images(train_path, sol_path, augment_paths, augment_sol_path, num_of_manips):
-    train_list = sorted(os.listdir(train_path))
+def handle_images(sol_path, augment_sol_path, num_of_manips):
+    train_list = sorted(os.listdir(BASE_TRAIN_PATH))
     train_size = len(train_list)
     train_name_start = int(train_list[-1].split('.')[0]) + 1
 
     hcs = update_solutions(train_name_start, num_of_manips, sol_path, augment_sol_path)
     hcs.to_csv(augment_sol_path, index=False)
 
-    train_paths = [train_path + '/' + f for f in train_list]
+    train_paths = [BASE_TRAIN_PATH + '/' + f for f in train_list]
 
-    all_augment_paths = [[aug_path + '/' + str(train_name_start + i + train_size * aug_no) +
-                          '.jpg' for i in range(train_size * num_of_manips)] for aug_no, aug_path in enumerate(augment_paths)]
+    all_augment_paths = [[str(train_name_start + i + train_size * aug_no) +
+                          '.jpg' for i in range(train_size * num_of_manips)]
+                         for aug_no in range(3)]
 
     np.random.seed(1234)
 
@@ -67,9 +73,9 @@ def handle_images(train_path, sol_path, augment_paths, augment_sol_path, num_of_
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
     rand_filter_trains = np.random.randint(0, 3, size=train_size)
 
-    zip_col_train = [zip(train_paths, all_augment_paths[0], rand_hue_trains)]
-    zip_rot_train = [zip(train_paths, all_augment_paths[1], rand_rot_trains)]
-    zip_filt_train = [zip(train_paths, all_augment_paths[2], rand_filter_trains)]
+    zip_col_train = list(zip(train_paths, all_augment_paths[0], rand_hue_trains))
+    zip_rot_train = list(zip(train_paths, all_augment_paths[1], rand_rot_trains))
+    zip_filt_train = list(zip(train_paths, all_augment_paths[2], rand_filter_trains))
 
     return zip_col_train, zip_rot_train, zip_filt_train
 
@@ -83,7 +89,7 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
     for n in range(num_of_manips):
         temp = df.copy()
         s = start + (start * n)
-        temp['GalaxyID'] = np.arange(s, s + df.index)
+        temp['GalaxyID'] = np.arange(s, s + len(df.index))
         new_dfs.append(temp)
 
     return pd.concat(new_dfs)
@@ -99,7 +105,16 @@ def augment_images(train_path, sol_path):
 
     (pl.Path(augment_path).mkdir(parents=True, exist_ok=True) for augment_path in augment_paths)
 
-    color_train, rot_trains, filt_trains = handle_images(train_path, sol_path, augment_paths, augment_sol_path, NUM_MANIPS)
+    global BASE_TRAIN_PATH, BASE_COLOR_PATH, BASE_ROTATE_PATH, BASE_FILTER_PATH
+
+    BASE_TRAIN_PATH = train_path
+    BASE_COLOR_PATH = augment_paths[0]
+    BASE_ROTATE_PATH = augment_paths[1]
+    BASE_FILTER_PATH = augment_paths[2]
+
+    color_train, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
+
+    print(color_train)
 
     pool = Pool()
     pool.starmap(recolor_image, color_train)
