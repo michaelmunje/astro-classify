@@ -72,7 +72,7 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
 
     all_augment_paths = [[str(train_name_start + i + train_size * aug_no) +
                           '.jpg' for i in range(train_size * num_of_manips)]
-                         for aug_no in range(3)]
+                         for aug_no in range(num_of_manips)]
 
     np.random.seed(1234)
 
@@ -80,9 +80,9 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
     rand_hue_trains = np.random.uniform(0, 1.0, size=train_size)
     rand_filter_trains = np.random.randint(0, 3, size=train_size)
 
-    zip_col_train = list(zip(train_list[:train_size], all_augment_paths[0], rand_hue_trains))
-    zip_rot_train = list(zip(train_list[train_size:train_size * 2], all_augment_paths[1], rand_rot_trains))
-    zip_filt_train = list(zip(train_list[train_size * 2:train_size * 3], all_augment_paths[2], rand_filter_trains))
+    zip_col_train = list(zip(train_list, all_augment_paths[0], rand_hue_trains))
+    zip_rot_train = list(zip(train_list, all_augment_paths[1], rand_rot_trains))
+    zip_filt_train = list(zip(train_list, all_augment_paths[2], rand_filter_trains))
 
     return zip_col_train, zip_rot_train, zip_filt_train
 
@@ -103,9 +103,10 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
 
 
 def augment_images(train_path, sol_path):
-    NUM_MANIPS = 3
+    augments = ['color', 'rotate', 'filter']
+    num_of_manips = len(augments)
     base_path = '/'.join(train_path.split('/')[:-2])
-    augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in ['color', 'rotate', 'filter']]
+    augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in augments]
 
     base_sol_path = '/'.join(sol_path.split('/')[:-1])
     augment_sol_path = base_sol_path + '/augment_' + sol_path.split('/')[-1]
@@ -120,14 +121,12 @@ def augment_images(train_path, sol_path):
     BASE_ROTATE_PATH = augment_paths[1] + '/'
     BASE_FILTER_PATH = augment_paths[2] + '/'
 
-    color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
+    color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, num_of_manips)
 
-    batch_size = 50
-    for i in range(len(color_trains) // batch_size - 1):
+    batch_size = 100
+    for i in range(len(color_trains) // batch_size):
         print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size - 1))
         recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else -1])
-    # for img_name, new_img_name, rand in color_trains:
-    #     recolor_image(img_name, new_img_name, rand)
 
     pool = Pool()
 
