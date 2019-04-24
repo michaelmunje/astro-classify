@@ -124,9 +124,9 @@ def augment_images(train_path, sol_path):
     color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, num_of_manips)
 
     batch_size = 100
-    for i in range(len(color_trains) // batch_size):
-        print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size - 1))
-        recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else -1])
+    for i in range(len(color_trains) // batch_size - 1, len(color_trains) // batch_size):
+        print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size))
+        recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else len(color_trains)])
 
     pool = Pool()
 
