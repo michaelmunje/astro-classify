@@ -45,17 +45,17 @@ def construct_model():
     model.compile(loss='categorical_crossentropy',
                   optimizer='Adam',
                   metrics=['accuracy'])
-    
+
     return model
 
 
 def train_model(model_paths, transfer=False):
 
-    traindf = pd.read_csv(model_paths.train_solutions)
+    traindf = pd.read_csv(model_paths.clean_train_solutions)
 
     df_headers = list(traindf.columns)
 
-    datagen = IDG(rescale=1./255., validation_split=0.20)
+    datagen = IDG(rescale=1. / 255., validation_split=0.20)
 
     # Create generators
     train_generator = datagen.flow_from_dataframe(
@@ -85,8 +85,8 @@ def train_model(model_paths, transfer=False):
     else:
         model = construct_model()
 
-    STEP_SIZE_TRAIN = train_generator.n//train_generator.batch_size
-    STEP_SIZE_VALID = valid_generator.n//valid_generator.batch_size
+    STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
+    STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
     print("Training model...")
 

@@ -88,6 +88,7 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
 
 
 def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
+
     df = pd.read_csv(sol_path)
     df = df.sort_values(by=['GalaxyID'])
 
@@ -99,7 +100,7 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
         temp['GalaxyID'] = np.arange(s, s + len(df.index))
         new_dfs.append(temp)
 
-    return pd.concat(new_dfs)
+    pd.concat(new_dfs).to_csv(updated_sol_path, index=False)
 
 
 def augment_images(train_path, sol_path):
