@@ -67,10 +67,11 @@ if __name__ == '__main__':
     if system_arguments == "Manip Data":
         manip_images(model_paths.train_image_path, model_paths.train_solutions)
     elif system_arguments == "Train Model":
-        preprocessing.process_kaggle(model_paths.training_solutions, model_paths.clean_training_solutions)
+        preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
         models.train_model(model_paths)
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()
+        preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
         models.train_model(model_paths, transfer=True)
     elif system_arguments == "Mine":
         progress = load_progress(mine_prog_path)
