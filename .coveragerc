@@ -6,4 +6,5 @@ omit =
     galana/xamin/get.py
     galana/models/construct.py
     galana/models/evaluate.py
+    galana/preprocessing/data_augmentation.py
 
