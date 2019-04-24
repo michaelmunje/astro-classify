@@ -12,32 +12,30 @@ BASE_COLOR_PATH = ''
 BASE_ROTATE_PATH = ''
 BASE_FILTER_PATH = ''
 
-sess = None
-model = None
 
+def recolor_image(color_trains):
 
-def init():
-    global sess
-    global model
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
     model = tf.global_variables_initializer()
-    sess = tf.Session(config=config)
+    sess = tf.Session()
     sess.run(model)
 
+    for image_name, new_image_name, rand in color_trains:
 
-def recolor_image(image_name, new_image_name, rand):
+        if not os.path.isfile(BASE_COLOR_PATH + new_image_name):
 
-    image = Image.open(BASE_TRAIN_PATH + image_name)
+            image = Image.open(BASE_TRAIN_PATH + image_name)
 
-    image = tf.image.adjust_hue(image, rand)
-    tf_img = tf.image.convert_image_dtype(image, tf.float32)
+            image = tf.image.adjust_hue(image, rand)
+            tf_img = tf.image.convert_image_dtype(image, tf.float32)
 
-    result = sess.run(tf_img)
+            result = sess.run(tf_img)
 
-    plt.imsave(BASE_COLOR_PATH + new_image_name, result)
+            plt.imsave(BASE_COLOR_PATH + new_image_name, result)
 
-    print('Recolor ', new_image_name + ' Original: ' + image_name)
+            print('Recolor ', new_image_name + ' Original: ' + image_name)
+
+    sess.close()
+    tf.reset_default_graph()
 
 
 def rotate_image(image_name, new_image_name, rand):
@@ -124,9 +122,15 @@ def augment_images(train_path, sol_path):
 
     color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, NUM_MANIPS)
 
-    pool = Pool(processes=20, initializer=init)
+    batch_size = 50
+    for i in range(len(color_trains) // batch_size - 1):
+        print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size - 1))
+        recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else -1])
+    # for img_name, new_img_name, rand in color_trains:
+    #     recolor_image(img_name, new_img_name, rand)
 
-    pool.starmap(recolor_image, color_trains)
+    pool = Pool()
+
     pool.starmap(rotate_image, rot_trains)
     pool.starmap(filter_image, filt_trains)
 
