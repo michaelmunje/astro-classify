@@ -21,8 +21,10 @@ def initialize_default_paths():
     else:
         model_paths.train_image_files = []
 
-    model_paths.train_solutions = os.getcwd() + '/data/kaggle/training_solutions_rev1.csv'
+    model_paths.train_solutions = os.getcwd() + '/data/kaggle/updated_solutions.csv'
     model_paths.clean_train_solutions = os.getcwd() + '/data/kaggle/clean_training_solutions_rev1.csv'
+    model_paths.augmented_solutions = os.getcwd() + '/data/kaggle/updated_solutions.csv'
+
     model_paths.test_file = os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv'
     model_paths.output_model_file = os.getcwd() + '/data/kaggle/galaxy_classifier_model.json'
     model_paths.output_model_weights = os.getcwd() + '/data/kaggle/galaxy_classifier_weights.h5'

@@ -103,7 +103,7 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
     pd.concat(new_dfs).to_csv(updated_sol_path, index=False)
 
 
-def augment_images(train_path, sol_path):
+def augment_images(train_path, sol_path, augmented_sol_path):
     augments = ['color', 'rotate', 'filter']
     num_of_manips = len(augments)
     base_path = '/'.join(train_path.split('/')[:-2])
@@ -124,14 +124,14 @@ def augment_images(train_path, sol_path):
 
     color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, num_of_manips)
 
-    batch_size = 100
-    for i in range(len(color_trains) // batch_size - 1, len(color_trains) // batch_size):
-        print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size))
-        recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else len(color_trains)])
+    # batch_size = 100
+    # for i in range(len(color_trains) // batch_size - 1, len(color_trains) // batch_size):
+    #     print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size))
+    #     recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else len(color_trains)])
 
-    pool = Pool()
+    # pool = Pool()
 
-    pool.starmap(rotate_image, rot_trains)
-    pool.starmap(filter_image, filt_trains)
+    # pool.starmap(rotate_image, rot_trains)
+    # pool.starmap(filter_image, filt_trains)
 
     # (os.rename(augment_path + '/' + f, model_paths.train_image_path + '/' + f) for f in os.listdir(augment_path) for augment_path in model_paths.new_paths)
