@@ -232,10 +232,6 @@ fabric.properties
 
 utils/xamin\.jar
 
-data/mine/raw/
-data/mine/tables
-data/mine/gz_tables
-
 docker/Dockerfiles/current_installs/machine-learning/Dockerfile
 
 docker/Dockerfiles/current_installs/mine/Dockerfile
@@ -248,24 +244,7 @@ wip/
 
 docker/Dockercache
 
-data/kaggle/updated_solutions\.csv
-data/kaggle/images_manip_train (copy)/
-
 tests/process_image/*.jpg
 tests/process_image/bbox
 
-data/kaggle/augment_training_solutions_rev1\.csv
-
-data/kaggle/train_augment/
-
 core
-
-data/kaggle/images_training_rev1\.zip
-
-data/kaggle/train_augment\.zip
-
-data/kaggle/clean_training_solutions_rev1\.csv
-
-data/kaggle/checkpoint-01-0\.69\.hdf5
-
-data/kaggle/checkpoint-01-0\.79\.hdf5
