@@ -3,23 +3,43 @@ from keras_preprocessing.image import ImageDataGenerator as IDG
 from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras.applications import inception_v3
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from keras.callbacks import ModelCheckpoint
 import pandas as pd
 
 
-def construct_transfer_model():
+def construct_outer_layer_transfer():
+
+    base_model = inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg')
+
     model = Sequential([
         Cropping2D(cropping=((64, 63), (64, 63)), input_shape=[424, 424, 3]),
-        inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg'),
+        base_model,
         Dense(1024, activation='relu'),
-        Dense(1024, activation='relu'),
+        Dropout(0.5),
         Dense(512, activation='relu'),
         Dense(4, activation='softmax')
     ])
 
+    for layer in base_model.layers:
+        layer.trainable = False
+
     model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(lr=0.000001),
+                  optimizer='rmsprop',
+                  metrics=['accuracy'])
+
+    return model
+
+
+def fine_tune_transfer(model):
+
+    for layer in model.layers[:249]:
+        layer.trainable = False
+    for layer in model.layers[249:]:
+        layer.trainable = True
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(lr=0.000001, momentum=0.9),
                   metrics=['accuracy'])
 
     return model
@@ -81,7 +101,7 @@ def train_model(model_paths, transfer=False):
         target_size=(424, 424))
 
     if transfer:
-        model = construct_transfer_model()
+        model = construct_outer_layer_transfer()
     else:
         model = construct_model()
 
@@ -99,6 +119,15 @@ def train_model(model_paths, transfer=False):
                         validation_steps=STEP_SIZE_VALID,
                         callbacks=callbacks_list,
                         epochs=30)
+
+    if transfer:
+        model = fine_tune_transfer(model)
+        model.fit_generator(generator=train_generator,
+                            steps_per_epoch=STEP_SIZE_TRAIN,
+                            validation_data=valid_generator,
+                            validation_steps=STEP_SIZE_VALID,
+                            callbacks=callbacks_list,
+                            epochs=30)
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
