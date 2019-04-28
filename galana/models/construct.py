@@ -68,7 +68,7 @@ def construct_model():
 
 def train_model(model_paths, transfer=False):
 
-    traindf = pd.read_csv(model_paths.clean_train_solutions)
+    traindf = pd.read_csv(model_paths.augmented_solutions)
 
     df_headers = list(traindf.columns)
 

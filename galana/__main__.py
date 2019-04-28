@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
 def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
     preprocessing.process_kaggle(train_sols, clean_sols)
-    preprocessing.augment_images(train_image_path, train_sols, augmented_sols)
+    preprocessing.augment_images(train_image_path, clean_sols, augmented_sols)
 
 
 if __name__ == '__main__':
