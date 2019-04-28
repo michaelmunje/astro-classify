@@ -4,16 +4,15 @@ from keras.layers import Dense, Flatten, Dropout
 from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras.applications import inception_v3
 from keras.optimizers import Adam, SGD
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 import pandas as pd
 
 
 def construct_outer_layer_transfer():
 
-    base_model = inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg')
+    base_model = inception_v3.InceptionV3(include_top=False, weights='imagenet', pooling='avg', input_shape=[200, 200, 3])
 
     model = Sequential([
-        Cropping2D(cropping=((64, 63), (64, 63)), input_shape=[424, 424, 3]),
         base_model,
         Dense(1024, activation='relu'),
         Dropout(0.5),
@@ -25,7 +24,7 @@ def construct_outer_layer_transfer():
         layer.trainable = False
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer='adam',
                   metrics=['accuracy'])
 
     return model
@@ -33,13 +32,11 @@ def construct_outer_layer_transfer():
 
 def fine_tune_transfer(model):
 
-    for layer in model.layers[:249]:
-        layer.trainable = False
-    for layer in model.layers[249:]:
+    for layer in model.layers:
         layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(lr=0.000001, momentum=0.9),
+                  optimizer=Adam(lr=0.000001),
                   metrics=['accuracy'])
 
     return model
@@ -47,8 +44,7 @@ def fine_tune_transfer(model):
 
 def construct_model():
     model = Sequential([
-        Cropping2D(cropping=((100, 100), (100, 100)), input_shape=[424, 424, 3]),
-        Conv2D(32, (3, 3), activation='relu'),
+        Conv2D(32, (3, 3), activation='relu', input_shape=[200, 200, 3]),
         Conv2D(32, (3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
         Dropout(0.25),
@@ -105,20 +101,34 @@ def train_model(model_paths, transfer=False):
     else:
         model = construct_model()
 
+    # print("Saved model to: " + model_paths.output_model_file)
+
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
     print("Training model...")
 
     checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint]
+    early_stopping = EarlyStopping(monitor='val_loss', patience=4)
+    callbacks_list = [checkpoint, early_stopping]
 
-    model.fit_generator(generator=train_generator,
-                        steps_per_epoch=STEP_SIZE_TRAIN,
-                        validation_data=valid_generator,
-                        validation_steps=STEP_SIZE_VALID,
-                        callbacks=callbacks_list,
-                        epochs=30)
+    # print("Saved model to: " + model_paths.output_model_file)
+
+    # model.fit_generator(generator=train_generator,
+    #                     steps_per_epoch=STEP_SIZE_TRAIN,
+    #                     validation_data=valid_generator,
+    #                     validation_steps=STEP_SIZE_VALID,
+    #                     callbacks=callbacks_list,
+    #                     epochs=30)
+
+    from keras.models import model_from_json
+
+    # # Model reconstruction from JSON file
+    # with open('data/kaggle/galaxy_classifier_model.json', 'r') as f:
+    #     model = model_from_json(f.read())
+
+    # Load weights into the new model
+    model.load_weights('data/kaggle/checkpoint-04-0.74.hdf5')
 
     if transfer:
         model = fine_tune_transfer(model)
@@ -145,4 +155,4 @@ def train_model(model_paths, transfer=False):
     # valid_generator.get_classes()
 
     print("Saved validation predictions to: " + model_paths.valid_preds)
-    print("Saved validation true to: " + model_paths.valid_)
+    print("Saved validation true to: " + model_paths.valid_true)
