@@ -6,3 +6,4 @@ from .preprocess_data import preprocess_folder
 from .data_augmentation import augment_images
 from .canonicalize_galaxies import canonicalize_galaxies
 from .process_kaggle import process_kaggle
+from .crop_training_data import crop_all
