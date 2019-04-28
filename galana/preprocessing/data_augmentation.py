@@ -100,7 +100,7 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
         temp['GalaxyID'] = np.arange(s, s + len(df.index))
         new_dfs.append(temp)
 
-    pd.concat(new_dfs).to_csv(updated_sol_path, index=False)
+    return pd.concat(new_dfs)
 
 
 def augment_images(train_path, sol_path, augmented_sol_path):
@@ -109,12 +109,6 @@ def augment_images(train_path, sol_path, augmented_sol_path):
     base_path = '/'.join(train_path.split('/')[:-2])
     augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in augments]
 
-    base_sol_path = '/'.join(sol_path.split('/')[:-1])
-    augment_sol_path = base_sol_path + '/augment_' + sol_path.split('/')[-1]
-
-    for aug_path in augment_paths:
-        pl.Path(aug_path).mkdir(parents=True, exist_ok=True)
-
     global BASE_TRAIN_PATH, BASE_COLOR_PATH, BASE_ROTATE_PATH, BASE_FILTER_PATH
 
     BASE_TRAIN_PATH = train_path
@@ -122,7 +116,7 @@ def augment_images(train_path, sol_path, augmented_sol_path):
     BASE_ROTATE_PATH = augment_paths[1] + '/'
     BASE_FILTER_PATH = augment_paths[2] + '/'
 
-    color_trains, rot_trains, filt_trains = handle_images(sol_path, augment_sol_path, num_of_manips)
+    color_trains, rot_trains, filt_trains = handle_images(sol_path, augmented_sol_path, num_of_manips)
 
     # batch_size = 100
     # for i in range(len(color_trains) // batch_size - 1, len(color_trains) // batch_size):

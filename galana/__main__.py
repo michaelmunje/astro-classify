@@ -56,17 +56,17 @@ if __name__ == '__main__':
     system_arguments = ' '.join(sys.argv[1:])
 
 
-def manip_images(train_image_path, train_solutions):
-    preprocessing.augment_images(train_image_path, train_solutions)
+def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
+    preprocessing.process_kaggle(train_sols, clean_sols)
+    preprocessing.augment_images(train_image_path, train_sols, augmented_sols)
 
 
 if __name__ == '__main__':
     model_paths = models.initialize_default_paths()
     system_arguments = ' '.join(sys.argv[1:])
     if system_arguments == "Manip Data":
-        manip_images(model_paths.train_image_path, model_paths.train_solutions)
+        manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
     elif system_arguments == "Train Model":
-        preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
         models.train_model(model_paths)
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()

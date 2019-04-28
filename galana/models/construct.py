@@ -110,7 +110,7 @@ def train_model(model_paths, transfer=False):
     print("Training model...")
 
     checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-    early_stopping = EarlyStopping(monitor='val_loss', patience=4)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
     callbacks_list = [checkpoint, early_stopping]
 
     # print("Saved model to: " + model_paths.output_model_file)
