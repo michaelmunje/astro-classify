@@ -5,6 +5,7 @@ from keras.layers import Conv2D, MaxPooling2D, Cropping2D
 from keras.applications import inception_v3
 from keras.optimizers import Adam, SGD
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.models import model_from_json
 import pandas as pd
 
 
@@ -83,7 +84,7 @@ def train_model(model_paths, transfer=False):
         class_mode='categorical',
         batch_size=24,
         seed=42,
-        target_size=(424, 424))
+        target_size=(200, 200))
 
     valid_generator = datagen.flow_from_dataframe(
         dataframe=traindf,
@@ -94,7 +95,7 @@ def train_model(model_paths, transfer=False):
         class_mode='categorical',
         batch_size=24,
         seed=42,
-        target_size=(424, 424))
+        target_size=(200, 200))
 
     if transfer:
         model = construct_outer_layer_transfer()
@@ -114,21 +115,19 @@ def train_model(model_paths, transfer=False):
 
     # print("Saved model to: " + model_paths.output_model_file)
 
-    # model.fit_generator(generator=train_generator,
-    #                     steps_per_epoch=STEP_SIZE_TRAIN,
-    #                     validation_data=valid_generator,
-    #                     validation_steps=STEP_SIZE_VALID,
-    #                     callbacks=callbacks_list,
-    #                     epochs=30)
-
-    from keras.models import model_from_json
+    model.fit_generator(generator=train_generator,
+                        steps_per_epoch=STEP_SIZE_TRAIN,
+                        validation_data=valid_generator,
+                        validation_steps=STEP_SIZE_VALID,
+                        callbacks=callbacks_list,
+                        epochs=30)
 
     # # Model reconstruction from JSON file
     # with open('data/kaggle/galaxy_classifier_model.json', 'r') as f:
     #     model = model_from_json(f.read())
 
     # Load weights into the new model
-    model.load_weights('data/kaggle/checkpoint-04-0.74.hdf5')
+    # model.load_weights('data/kaggle/checkpoint-04-0.74.hdf5')
 
     if transfer:
         model = fine_tune_transfer(model)
