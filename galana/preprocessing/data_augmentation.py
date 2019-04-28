@@ -100,7 +100,10 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
         temp['GalaxyID'] = np.arange(s, s + len(df.index))
         new_dfs.append(temp)
 
-    return pd.concat(new_dfs)
+    updated_df = pd.concat(new_dfs)
+    updated_df["GalaxyID"] = updated_df["GalaxyID"].apply(lambda x: str(x) + ".jpg" if not str(x).endswith('.jpg') else x)
+
+    return updated_df
 
 
 def augment_images(train_path, sol_path, augmented_sol_path):
