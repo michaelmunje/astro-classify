@@ -4,7 +4,6 @@ import sys
 import xamin
 import preprocessing
 import models
-import preprocessing
 
 
 root_dir = os.getcwd()
@@ -73,6 +72,9 @@ if __name__ == '__main__':
         model_paths = models.initialize_default_paths()
         preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
         models.train_model(model_paths, transfer=True)
+    elif system_arguments == "Crop":
+        model_paths = models.initialize_default_paths()
+        preprocessing.crop_all(model_paths.train_image_path)
     elif system_arguments == "Mine":
         progress = load_progress(mine_prog_path)
         if progress is None:
