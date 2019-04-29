@@ -4,6 +4,7 @@ from .merge import merge
 from .preprocess_data import preprocess_file
 from .preprocess_data import preprocess_folder
 from .data_augmentation import augment_images
+from .data_augmentation import update_solutions
 from .canonicalize_galaxies import canonicalize_galaxies
 from .process_kaggle import process_kaggle
 from .crop_training_data import crop_all

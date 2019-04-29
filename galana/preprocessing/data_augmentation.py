@@ -3,14 +3,15 @@ from PIL import Image, ImageFilter
 import matplotlib.pyplot as plt
 import os
 import numpy as np
-import pathlib as pl
 from multiprocessing import Pool
+import pathlib as pl
 import pandas as pd
 
 BASE_TRAIN_PATH = ''
 BASE_COLOR_PATH = ''
 BASE_ROTATE_PATH = ''
 BASE_FILTER_PATH = ''
+NUM_OF_MANIPS = 3
 
 
 def recolor_image(color_trains):
@@ -62,17 +63,19 @@ def filter_image(image_name, new_image_name, f_type):
     print('Filter ', new_image_name + ' Original: ' + image_name)
 
 
-def handle_images(sol_path, augment_sol_path, num_of_manips):
+def handle_images(sol_path):
     train_list = sorted(os.listdir(BASE_TRAIN_PATH))
-    train_size = len(train_list)
-    train_name_start = int(train_list[-1].split('.')[0]) + 1
 
-    hcs = update_solutions(train_name_start, num_of_manips, sol_path, augment_sol_path)
-    hcs.to_csv(augment_sol_path, index=False)
+    df = pd.read_csv(sol_path)
+    df['GalaxyID'] = df['GalaxyID'].apply(lambda f: f[:-4]).astype(int)
+    df = df.sort_values(by=['GalaxyID'])
+
+    train_name_start = df.iloc[-1, ]['GalaxyID'] + 1
+    train_size = len(df['GalaxyID'])
 
     all_augment_paths = [[str(train_name_start + i + train_size * aug_no) +
-                          '.jpg' for i in range(train_size * num_of_manips)]
-                         for aug_no in range(num_of_manips)]
+                          '.jpg' for i in range(train_size * NUM_OF_MANIPS)]
+                         for aug_no in range(NUM_OF_MANIPS)]
 
     np.random.seed(1234)
 
@@ -87,33 +90,38 @@ def handle_images(sol_path, augment_sol_path, num_of_manips):
     return zip_col_train, zip_rot_train, zip_filt_train
 
 
-def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
+def update_solutions(sol_path, updated_sol_path):
 
     df = pd.read_csv(sol_path)
+    df['GalaxyID'] = df['GalaxyID'].apply(lambda f: f[:-4]).astype(int)
+
     df = df.sort_values(by=['GalaxyID'])
-    train_name_start = int(df.iloc[-1, ]['GalaxyID'][:-4])
+
+    train_name_start = df.iloc[-1, ]['GalaxyID'] + 1
+
     train_size = len(df['GalaxyID'])
 
-    for index, row in df.iterrows():
-        print("Processing ", index + 1, " / ", train_size)
-        id_num = int(row['GalaxyID'][:-4])
-        row['GalaxyID'] = train_name_start + id_num + train_size * 1
-        df.append(row)
-        row['GalaxyID'] = train_name_start + id_num + train_size * 2
-        df.append(row)
-        row['GalaxyID'] = train_name_start + id_num + train_size * 3
-        df.append(row)
+    df = pd.concat([df] * NUM_OF_MANIPS, ignore_index=True)
 
-    df["GalaxyID"] = df["GalaxyID"].apply(lambda x: str(x) + ".jpg" if not str(x).endswith('.jpg') else x)
+    for i in range(NUM_OF_MANIPS):
+        print("Processing augment csv update ", (i + 1), " / ", NUM_OF_MANIPS)
+        df.update(df.iloc[train_size * (i + 1): train_size * (i + 2), ]['GalaxyID'].apply
+                  (lambda id_num: train_name_start + id_num + train_size * i))
 
-    return df
+    df["GalaxyID"] = df["GalaxyID"].astype(int)
+
+    df["GalaxyID"] = df["GalaxyID"].astype(str).apply(lambda x: x + ".jpg")
+
+    df.to_csv(updated_sol_path, index=False)
 
 
-def augment_images(train_path, sol_path, augmented_sol_path):
+def augment_images(train_path, sol_path):
     augments = ['color', 'rotate', 'filter']
-    num_of_manips = len(augments)
     base_path = '/'.join(train_path.split('/')[:-2])
     augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in augments]
+
+    for augment_path in augment_paths:
+        pl.Path(augment_path).mkdir(parents=True, exist_ok=True)
 
     global BASE_TRAIN_PATH, BASE_COLOR_PATH, BASE_ROTATE_PATH, BASE_FILTER_PATH
 
@@ -122,16 +130,16 @@ def augment_images(train_path, sol_path, augmented_sol_path):
     BASE_ROTATE_PATH = augment_paths[1] + '/'
     BASE_FILTER_PATH = augment_paths[2] + '/'
 
-    color_trains, rot_trains, filt_trains = handle_images(sol_path, augmented_sol_path, num_of_manips)
+    color_trains, rot_trains, filt_trains = handle_images(sol_path)
 
-    # batch_size = 100
-    # for i in range(len(color_trains) // batch_size - 1, len(color_trains) // batch_size):
-    #     print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size))
-    #     recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else len(color_trains)])
+    batch_size = 100
+    for i in range(len(color_trains) // batch_size):
+        print("Batch ", (i + 1), " out of ", (len(color_trains) // batch_size))
+        recolor_image(color_trains[batch_size * i: batch_size * (i + 1) if i != (len(color_trains) // batch_size - 1) else len(color_trains)])
 
-    # pool = Pool()
+    pool = Pool()
 
-    # pool.starmap(rotate_image, rot_trains)
-    # pool.starmap(filter_image, filt_trains)
+    pool.starmap(rotate_image, rot_trains)
+    pool.starmap(filter_image, filt_trains)
 
-    # (os.rename(augment_path + '/' + f, model_paths.train_image_path + '/' + f) for f in os.listdir(augment_path) for augment_path in model_paths.new_paths)
+    (os.rename(augment_path + '/' + f, train_path + '/' + f) for f in os.listdir(augment_path) for augment_path in augment_paths)

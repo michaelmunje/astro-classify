@@ -109,7 +109,7 @@ def train_model(model_paths, transfer=False):
 
     print("Training model...")
 
-    checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(model_paths.checkpoint_outer_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     early_stopping = EarlyStopping(monitor='val_loss', patience=2)
     callbacks_list = [checkpoint, early_stopping]
 
@@ -128,6 +128,8 @@ def train_model(model_paths, transfer=False):
 
     # Load weights into the new model
     # model.load_weights('data/kaggle/checkpoint-04-0.74.hdf5')
+
+    checkpoint = ModelCheckpoint(model_paths.checkpoint_overall_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
     if transfer:
         model = fine_tune_transfer(model)
