@@ -21,14 +21,18 @@ else
 fi
 echo -e "\e[96mRunning galana container..."
 echo -e "\e[39m"
-if [[ $1 == 'test' ]]; then
-docker run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; python -m pytest --cov=galana/ -W ignore::DeprecationWarning"
-elif [[ $1 == 'jupyter' ]]
-then
-docker run -ti --rm --net=host -v $(pwd):/home/jovyan/:rw -u `id -u $USER`:`id -g $USER` galana bash -c "rm -rf /home/joyvan/work;jupyter notebook"
-else
-docker run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; bash"
+
+length=$(command -v nvidia-docker | wc -c)
+DOCKER_ALIAS=docker
+
+if [ "$length" -gt "1" ]; then
+	DOCKER_ALIAS=nvidia-docker
 fi
 
-
-
+if [[ $1 == 'test' ]]; then
+	$DOCKER_ALIAS run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; python -m pytest --cov=galana/ -W ignore::DeprecationWarning"
+elif [[ $1 == 'jupyter' ]]; then
+	$DOCKER_ALIAS run -ti --rm --net=host -v $(pwd):/home/jovyan/:rw -u `id -u $USER`:`id -g $USER` galana bash -c "rm -rf /home/joyvan/work;jupyter notebook"
+else
+	$DOCKER_ALIAS run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; bash"
+fi

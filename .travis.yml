@@ -20,6 +20,7 @@ script:
   - conda clean -tipsy
   - pip install coveralls
   - pip install sphinx
+  - pip install matplotlib
   - conda install -y -c astropy astroquery
   - pip uninstall -y keras-preprocessing
   - pip install git+https://github.com/keras-team/keras-preprocessing.git

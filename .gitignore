@@ -232,8 +232,6 @@ fabric.properties
 
 utils/xamin\.jar
 
-data/mine/raw/
-
 docker/Dockerfiles/current_installs/machine-learning/Dockerfile
 
 docker/Dockerfiles/current_installs/mine/Dockerfile
@@ -246,8 +244,7 @@ wip/
 
 docker/Dockercache
 
-# Misc files
-*.gz
-*.csv
+tests/process_image/*.jpg
+tests/process_image/bbox
 
-
+core
