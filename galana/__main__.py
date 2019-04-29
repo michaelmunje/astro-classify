@@ -4,6 +4,7 @@ import sys
 import xamin
 import preprocessing
 import models
+import aws
 
 
 root_dir = os.getcwd()
@@ -52,19 +53,21 @@ def mine_final_phase():
     print("You have finished running the data pipeline. Results are available at: data/results/")
 
 
-if __name__ == '__main__':
-    system_arguments = ' '.join(sys.argv[1:])
-
-
 def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
     preprocessing.process_kaggle(train_sols, clean_sols)
     preprocessing.update_solutions(clean_sols, augmented_sols)
-    preprocessing.augment_images(train_image_path, clean_sols)
+    # preprocessing.augment_images(train_image_path, clean_sols)
+
+
+def detect_boxes():
+    aws.detect_boxes()
 
 
 if __name__ == '__main__':
     model_paths = models.initialize_default_paths()
     system_arguments = ' '.join(sys.argv[1:])
+    if system_arguments == "aws":
+        detect_boxes()
     if system_arguments == "Manip Data":
         manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
     elif system_arguments == "Train Model":
