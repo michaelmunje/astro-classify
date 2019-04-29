@@ -6,7 +6,7 @@ import numpy as np
 import json
 
 root_dir = os.getcwd()
-ipac_dir = root_dir + 'data/ipac/'
+ipac_dir = root_dir + '/data/ipac/'
 table_dir = root_dir + '/data/mine/tables/'
 alias_file = root_dir + '/data/mine/aliases.json'
 
@@ -28,7 +28,7 @@ def canonicalize_galaxies():
             found_key = False
             for key, value in downloaded_names.items():
                 if name in value:
-                    df.iloc[index,]['name'] = key
+                    df.iloc[index, ]['name'] = key
                     break
                 elif name == key:
                     found_key = True
@@ -37,7 +37,7 @@ def canonicalize_galaxies():
             if not found_key:
                 ids = Simbad.query_objectids(name)
                 downloaded_names[name] = list(np.asarray(ids.as_array(), dtype=str)) if ids else []
-            
+
         df.to_csv(table_csv)
 
     with open(alias_file, 'w') as fp:
