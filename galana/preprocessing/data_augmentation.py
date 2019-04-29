@@ -91,19 +91,22 @@ def update_solutions(start, num_of_manips, sol_path, updated_sol_path):
 
     df = pd.read_csv(sol_path)
     df = df.sort_values(by=['GalaxyID'])
+    train_name_start = int(df.iloc[-1, ]['GalaxyID'][:-4])
+    train_size = len(df['GalaxyID'])
 
-    new_dfs = []
-    new_dfs.append(df)
-    for n in range(num_of_manips):
-        temp = df.copy()
-        s = start + (start * n)
-        temp['GalaxyID'] = np.arange(s, s + len(df.index))
-        new_dfs.append(temp)
+    for index, row in df.iterrows():
+        print("Processing ", index + 1, " / ", train_size)
+        id_num = int(row['GalaxyID'][:-4])
+        row['GalaxyID'] = train_name_start + id_num + train_size * 1
+        df.append(row)
+        row['GalaxyID'] = train_name_start + id_num + train_size * 2
+        df.append(row)
+        row['GalaxyID'] = train_name_start + id_num + train_size * 3
+        df.append(row)
 
-    updated_df = pd.concat(new_dfs)
-    updated_df["GalaxyID"] = updated_df["GalaxyID"].apply(lambda x: str(x) + ".jpg" if not str(x).endswith('.jpg') else x)
+    df["GalaxyID"] = df["GalaxyID"].apply(lambda x: str(x) + ".jpg" if not str(x).endswith('.jpg') else x)
 
-    return updated_df
+    return df
 
 
 def augment_images(train_path, sol_path, augmented_sol_path):
