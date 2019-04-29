@@ -33,11 +33,13 @@ def construct_outer_layer_transfer():
 
 def fine_tune_transfer(model):
 
-    for layer in model.layers:
+    for layer in model.layers[:249]:
+        layer.trainable = False
+    for layer in model.layers[249:]:
         layer.trainable = True
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(lr=0.000001),
+                  optimizer=Adam(lr=0.00001),
                   metrics=['accuracy'])
 
     return model
@@ -66,7 +68,7 @@ def construct_model():
     return model
 
 
-def train_model(model_paths, transfer=False):
+def train_base_model(model_paths, transfer=False):
 
     traindf = pd.read_csv(model_paths.augmented_solutions)
 
@@ -128,6 +130,64 @@ def train_model(model_paths, transfer=False):
 
     # Load weights into the new model
     # model.load_weights('data/kaggle/checkpoint-04-0.74.hdf5')
+
+
+def finetune_model(model_paths, transfer=False):
+
+    traindf = pd.read_csv(model_paths.augmented_solutions)
+
+    df_headers = list(traindf.columns)
+
+    datagen = IDG(rescale=1. / 255., validation_split=0.20)
+
+    # Create generators
+    train_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=model_paths.train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="training",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(200, 200))
+
+    valid_generator = datagen.flow_from_dataframe(
+        dataframe=traindf,
+        directory=model_paths.train_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
+        subset="validation",
+        class_mode='categorical',
+        batch_size=24,
+        seed=42,
+        target_size=(200, 200))
+
+    if transfer:
+        model = construct_outer_layer_transfer()
+    else:
+        model = construct_model()
+
+
+    # print("Saved model to: " + model_paths.output_model_file)
+
+    STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
+    STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
+
+    print("Training model...")
+
+    checkpoint = ModelCheckpoint(model_paths.checkpoint_outer_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+    callbacks_list = [checkpoint, early_stopping]
+
+    # print("Saved model to: " + model_paths.output_model_file)
+
+    # # Model reconstruction from JSON file
+    # with open('data/kaggle/galaxy_classifier_model.json', 'r') as f:
+    #     model = model_from_json(f.read())
+
+    # Load weights into the new model
+    model.load_weights(model_paths.checkpoint_outer_path)
 
     checkpoint = ModelCheckpoint(model_paths.checkpoint_overall_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
