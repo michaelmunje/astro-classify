@@ -50,12 +50,12 @@ def rotate_image(image_name, new_image_name, rand):
 def filter_image(image_name, new_image_name, f_type):
 
     image = Image.open(BASE_TRAIN_PATH + image_name)
-    filter_types = [image.filter(ImageFilter.GaussianBlur(3)),
-                    image.filter(ImageFilter.MedianFilter(3)),
-                    image.filter(ImageFilter.ModeFilter(3))]
+    filter_types = [ImageFilter.GaussianBlur(3),
+                    ImageFilter.MedianFilter(3),
+                    ImageFilter.ModeFilter(3)]
 
-    if (0 <= f_type and f_type < 3):
-        filter_types[f_type]
+    if 0 <= f_type < 3:
+        image.filter(filter_types[f_type])
     else:
         print('Incorrect value assigned')
 
