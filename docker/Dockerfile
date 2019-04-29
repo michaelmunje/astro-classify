@@ -16,6 +16,7 @@ RUN apt-get update && \
     'matplotlib' \
     'pillow' \
     'jupyter' \
+    'boto3' \
     'tensorflow-gpu' && \
     pip install 'jupyter-tensorboard' && \
     conda install openjdk && \
