@@ -103,7 +103,7 @@ def update_solutions(sol_path, updated_sol_path):
 
     train_size = len(df['GalaxyID'])
 
-    df = pd.concat([df] * NUM_OF_MANIPS, ignore_index=True)
+    df = pd.concat([df] * (NUM_OF_MANIPS + 1), ignore_index=True)
 
     for i in range(NUM_OF_MANIPS):
         print("Processing augment csv update ", (i + 1), " / ", NUM_OF_MANIPS)
@@ -115,6 +115,16 @@ def update_solutions(sol_path, updated_sol_path):
     df["GalaxyID"] = df["GalaxyID"].astype(str).apply(lambda x: x + ".jpg")
 
     df.to_csv(updated_sol_path, index=False)
+
+
+def move_augments(train_path):
+    augments = ['color', 'rotate', 'filter']
+    base_path = '/'.join(train_path.split('/')[:-2])
+    augment_paths = [base_path + '/train_augment/' + augment_path for augment_path in augments]
+
+    for augment_path in augment_paths:
+        for f in os.listdir(augment_path):
+            os.rename(augment_path + '/' + f, train_path + '/' + f)
 
 
 def augment_images(train_path, sol_path):
@@ -144,6 +154,3 @@ def augment_images(train_path, sol_path):
     pool.starmap(rotate_image, rot_trains)
     pool.starmap(filter_image, filt_trains)
 
-    for augment_path in augment_paths:
-        for f in os.listdir(augment_path):
-            os.rename(augment_path + '/' + f, train_path + '/' + f)
