@@ -73,8 +73,10 @@ def handle_images(sol_path):
     train_name_start = df.iloc[-1, ]['GalaxyID'] + 1
     train_size = len(df['GalaxyID'])
 
-    all_augment_paths = [[str(train_name_start + i + train_size * aug_no) +
-                          '.jpg' for i in range(train_size * NUM_OF_MANIPS)]
+    galaxy_ids = list(df['GalaxyID'])
+
+    all_augment_paths = [[str(train_name_start + id_num + train_size * aug_no) +
+                          '.jpg' for id_num in galaxy_ids]
                          for aug_no in range(NUM_OF_MANIPS)]
 
     np.random.seed(1234)
@@ -142,4 +144,6 @@ def augment_images(train_path, sol_path):
     pool.starmap(rotate_image, rot_trains)
     pool.starmap(filter_image, filt_trains)
 
-    (os.rename(augment_path + '/' + f, train_path + '/' + f) for f in os.listdir(augment_path) for augment_path in augment_paths)
+    for augment_path in augment_paths:
+        for f in os.listdir(augment_path):
+            os.rename(augment_path + '/' + f, train_path + '/' + f)
