@@ -72,7 +72,7 @@ if __name__ == '__main__':
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()
         preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
-        models.train_base_model(model_paths, transfer=True)
+        # models.train_base_model(model_paths, transfer=True)
         models.finetune_model(model_paths, transfer=True)
     elif system_arguments == "Crop":
         model_paths = models.initialize_default_paths()
