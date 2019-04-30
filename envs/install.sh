@@ -14,7 +14,7 @@ conda install --quiet --yes \
 pip install 'jupyter-tensorboard'
 pip install 'boto3'
 conda clean -tipsy
-conda install -c --yes astropy astroquery
+conda install -y -c astropy astroquery
 #apt-get install -y libsm6 libxext6 libxrender-dev && \
-pip uninstall -y keras-preprocessing && \
+pip uninstall -y keras-preprocessing
 pip install git+https://github.com/keras-team/keras-preprocessing.git
