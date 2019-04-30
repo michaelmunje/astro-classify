@@ -56,7 +56,9 @@ def mine_final_phase():
 def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
     preprocessing.process_kaggle(train_sols, clean_sols)
     preprocessing.update_solutions(clean_sols, augmented_sols)
-    # preprocessing.augment_images(train_image_path, clean_sols)
+    preprocessing.augment_images(train_image_path, clean_sols)
+    preprocessing.move_augments(train_image_path)
+    preprocessing.crop_all(train_image_path)
 
 
 def detect_boxes():
@@ -75,8 +77,8 @@ if __name__ == '__main__':
         # models.train_model(model_paths)
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()
-        preprocessing.process_kaggle(model_paths.train_solutions, model_paths.clean_train_solutions)
-        # models.train_base_model(model_paths, transfer=True)
+        manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
+        models.train_base_model(model_paths, transfer=True)
         models.finetune_model(model_paths, transfer=True)
     elif system_arguments == "Crop":
         model_paths = models.initialize_default_paths()
