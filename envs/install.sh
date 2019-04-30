@@ -10,7 +10,11 @@ conda install --quiet --yes \
     'matplotlib' \
     'pillow' \
     'jupyter' \
-    'tensorflow-gpu'
+    'tensorflow'
+length=$(command -v nvidia-docker | wc -c)
+if [ "$length" -gt "1" ]; then
+	conda install 'tensorflow-gpu'
+fi
 pip install 'jupyter-tensorboard'
 pip install 'boto3'
 conda clean -tipsy
