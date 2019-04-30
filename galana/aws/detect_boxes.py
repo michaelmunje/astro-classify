@@ -29,10 +29,15 @@ def detect_boxes():
         print()
         for label in response['Labels']:
             for instance in label['Instances']:
+
+                top = instance['BoundingBox']['Top']
+                left = instance['BoundingBox']['Left']
+                width = instance['BoundingBox']['Width']
+                height = instance['BoundingBox']['Height']
+
                 print("  Bounding box")
                 print("    Top: " + str(instance['BoundingBox']['Top']))
                 print("    Left: " + str(instance['BoundingBox']['Left']))
                 print("    Width: " + str(instance['BoundingBox']['Width']))
                 print("    Height: " + str(instance['BoundingBox']['Height']))
-                print("    Confidence: " + str(instance['Confidence']))
                 print()
