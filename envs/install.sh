@@ -9,11 +9,12 @@ conda install --quiet --yes \
     'pytest-cov' \
     'matplotlib' \
     'pillow' \
-    'jupyter' \
-    'tensorflow'
+    'jupyter'
 length=$(command -v nvidia-docker | wc -c)
 if [ "$length" -gt "1" ]; then
 	conda install 'tensorflow-gpu'
+else
+	conda install 'tensorflow'
 fi
 pip install 'jupyter-tensorboard'
 pip install 'boto3'
