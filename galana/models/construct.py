@@ -21,28 +21,29 @@ def construct_outer_layer_transfer():
         Dense(4, activation='softmax')
     ])
 
-    for layer in base_model.layers:
-        layer.trainable = False
+    # for layer in base_model.layers:
+    #     layer.trainable = False
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='adam',
+                  optimizer=Adam(lr=0.000001),
                   metrics=['accuracy'])
 
     return model
 
 
 def fine_tune_transfer(model):
-
-    for layer in model.layers[:249]:
-        layer.trainable = False
-    for layer in model.layers[249:]:
-        layer.trainable = True
-
-    model.compile(loss='categorical_crossentropy',
-                  optimizer=Adam(lr=0.00001),
-                  metrics=['accuracy'])
-
-    return model
+    pass
+    #
+    # for layer in model.layers[:249]:
+    #     layer.trainable = False
+    # for layer in model.layers[249:]:
+    #     layer.trainable = True
+    #
+    # model.compile(loss='categorical_crossentropy',
+    #               optimizer=Adam(lr=0.00001),
+    #               metrics=['accuracy'])
+    #
+    # return model
 
 
 def construct_model():
