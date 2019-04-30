@@ -10,7 +10,7 @@ conda install --quiet --yes \
     'matplotlib' \
     'pillow' \
     'jupyter'
-length=$(command -v nvidia-docker | wc -c)
+length=$( command -v nvidia-docker | wc -c )
 if [ "$length" -gt "1" ]; then
 	conda install 'tensorflow-gpu'
 else
