@@ -84,12 +84,12 @@ def train_model(model_paths, transfer=False):
         seed=42,
         target_size=(200, 200))
 
-    # if transfer:
-    #     model = construct_transfer_model()
-    # else:
-    #     model = construct_model()
+    if transfer:
+        model = construct_transfer_model()
+    else:
+        model = construct_model()
 
-    # print("Saved model to: " + model_paths.output_model_file)
+    print("Saved model architecture to: " + model_paths.output_model_file)
 
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size + 1
     STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size + 1
@@ -100,23 +100,21 @@ def train_model(model_paths, transfer=False):
     early_stopping = EarlyStopping(monitor='val_loss', patience=2)
     callbacks_list = [checkpoint, early_stopping]
 
-    # print("Saved model to: " + model_paths.output_model_file)
-    #
-    # model.fit_generator(generator=train_generator,
-    #                     steps_per_epoch=STEP_SIZE_TRAIN,
-    #                     validation_data=valid_generator,
-    #                     validation_steps=STEP_SIZE_VALID,
-    #                     callbacks=callbacks_list,
-    #                     epochs=30)
+    model.fit_generator(generator=train_generator,
+                        steps_per_epoch=STEP_SIZE_TRAIN,
+                        validation_data=valid_generator,
+                        validation_steps=STEP_SIZE_VALID,
+                        callbacks=callbacks_list,
+                        epochs=30)
 
-    # model_json = model.to_json()
-    # with open(model_paths.output_model_file, "w") as json_file:
-    #     json_file.write(model_json)
-    #
-    # model.save_weights(model_paths.checkpoint_outer_path, overwrite=True)
+    model_json = model.to_json()
+    with open(model_paths.output_model_file, "w") as json_file:
+        json_file.write(model_json)
 
-    # print("Saved model to: " + model_paths.output_model_file)
-    # print("Saved weights to: " + model_paths.output_model_weights)
+    model.save_weights(model_paths.checkpoint_outer_path, overwrite=True)
+
+    print("Saved model to: " + model_paths.output_model_file)
+    print("Saved weights to: " + model_paths.output_model_weights)
 
     model = load_model(model_paths.checkpoint_outer_path)
 
@@ -129,10 +127,6 @@ def train_model(model_paths, transfer=False):
     pd.DataFrame(y_preds).to_csv(model_paths.valid_preds, index=False)
 
     pd.DataFrame(y_actuals).to_csv(model_paths.valid_true, index=False)
-
-    # preds_df = pd.DataFrame({'y_pred': y_preds, 'y_actual': y_actuals}, columns=['y_pred', 'y_actual'])
-    #
-    # preds_df.to_csv(model_paths.valid_preds, index=False)
 
     print("Saved predictions to: " + model_paths.valid_preds)
 
