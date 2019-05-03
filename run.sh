@@ -1,4 +1,10 @@
 #!/bin/bash
+length=$(command -v nvidia-docker | wc -c)
+TF=tensorflow
+
+if [ "$length" -gt "1" ]; then
+	TF=tensorflow-gpu
+fi
 if [[ "$(docker images -q galana 2> /dev/null)" == "" ]]; then
 echo -e "\e[96mDocker tag not found. Building docker image..."
 echo -e "\e[39m"
@@ -21,14 +27,11 @@ else
 fi
 echo -e "\e[96mRunning galana container..."
 echo -e "\e[39m"
-
-length=$(command -v nvidia-docker | wc -c)
 DOCKER_ALIAS=docker
 
 if [ "$length" -gt "1" ]; then
 	DOCKER_ALIAS=nvidia-docker
 fi
-
 if [[ $1 == 'test' ]]; then
 	$DOCKER_ALIAS run -ti --rm --net=host -v $(pwd):/galana:rw -u `id -u $USER`:`id -g $USER` galana bash -c "cd galana; python -m pytest --cov=galana/ -W ignore::DeprecationWarning"
 elif [[ $1 == 'jupyter' ]]; then
