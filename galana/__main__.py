@@ -68,36 +68,39 @@ def detect_boxes():
 if __name__ == '__main__':
     model_paths = models.initialize_default_paths()
     system_arguments = ' '.join(sys.argv[1:])
+
     if system_arguments == "aws":
         detect_boxes()
+
     if system_arguments == "Manip Data":
         manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
+
     elif system_arguments == "Train Model":
-        print("Hello")
-        # models.train_model(model_paths)
+        models.train_model(model_paths)
+
     elif system_arguments == "Train Transfer Model":
         model_paths = models.initialize_default_paths()
-        manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
-        models.train_base_model(model_paths, transfer=True)
-        models.finetune_model(model_paths, transfer=True)
-    elif system_arguments == "Crop":
-        model_paths = models.initialize_default_paths()
-        preprocessing.crop_all(model_paths.train_image_path)
-    elif system_arguments == "Mine":
-        progress = load_progress(mine_prog_path)
-        if progress is None:
-            mine_phase_one_data_retrieval()
-        else:
-            num = progress['Progress']
-            switcher = {
-                1: mine_phase_one_data_retrieval,
-                2: mine_phase_two_data_preprocessing(),
-                3: mine_phase_three_clustering(),
-                4: mine_final_phase
-            }
+       # manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
+        models.train_model(model_paths, transfer=True)
 
-            current_phase = switcher.get(num, lambda: "Corrupt pickle.")
-            current_phase()
+    elif system_arguments == "Evaluate":
+        models.eval_metrics(model_paths)
+
+    # elif system_arguments == "Mine":
+    #     progress = load_progress(mine_prog_path)
+    #     if progress is None:
+    #         mine_phase_one_data_retrieval()
+    #     else:
+    #         num = progress['Progress']
+    #         switcher = {
+    #             1: mine_phase_one_data_retrieval,
+    #             2: mine_phase_two_data_preprocessing(),
+    #             3: mine_phase_three_clustering(),
+    #             4: mine_final_phase
+    #         }
+    #
+    #         current_phase = switcher.get(num, lambda: "Corrupt pickle.")
+    #         current_phase()
 
     # elif system_arguments == "ML":
     #     progress = load_progress(ml_prog_path)
