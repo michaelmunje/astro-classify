@@ -3,6 +3,8 @@ FROM $BASE_CONTAINER
 
 LABEL maintainer="Michael Munje & Danster"
 
+ARG TF
+
 RUN apt-get update && \
     apt-get upgrade -y && \
     conda update -n base conda && \
@@ -17,7 +19,7 @@ RUN apt-get update && \
     'pillow' \
     'jupyter' \
     'boto3' \
-    'tensorflow-gpu' && \
+    $TF && \
     pip install 'jupyter-tensorboard' && \
     conda install openjdk && \
     conda clean -tipsy && \
