@@ -42,8 +42,8 @@ def initialize_default_paths():
     model_paths.output_model_file = os.getcwd() + '/data/kaggle/models/galaxy_classifier_model.json'
     model_paths.output_model_weights = os.getcwd() + '/data/kaggle/models/galaxy_classifier_weights.h5'
 
-    model_paths.checkpoint_outer_path = os.getcwd() + "/data/kaggle/models/best_outer_model.hdf5"
-    model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.hdf5"
+    model_paths.checkpoint_path = os.getcwd() + "data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5"
+    model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.h5"
 
     model_paths.valid_true = os.getcwd() + "/data/kaggle/eval/valid/true.csv"
     model_paths.valid_preds = os.getcwd() + "/data/kaggle/eval/valid/preds.csv"
@@ -58,6 +58,7 @@ def initialize_default_paths():
     pl.Path(model_paths.train_image_path).mkdir(parents=True, exist_ok=True)
     pl.Path(model_paths.valid_image_path).mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/models/').mkdir(parents=True, exist_ok=True)
+    pl.Path(os.getcwd() + '/data/kaggle/models/checkpoints/').mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/solutions/').mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/eval/valid/').mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/eval/test/').mkdir(parents=True, exist_ok=True)
@@ -66,7 +67,7 @@ def initialize_default_paths():
 
 
 def initialize_custom_paths(test_images_p, valid_images_p, train_images_p, train_sol, clean_sols, augmented_sols, valid_sols, test_sols,
-                            test_f, output_model_f, output_model_w, checkpoint_p_outer, checkpoint_p_overall, conf_matrix,
+                            test_f, output_model_f, output_model_w, checkpoint_p, checkpoint_p_overall, conf_matrix,
                             other_metrics, val_true, val_preds, test_preds, test_true):
     model_paths = ModelPaths()
     model_paths.test_image_path = test_images_p
@@ -97,7 +98,7 @@ def initialize_custom_paths(test_images_p, valid_images_p, train_images_p, train
     model_paths.test_file = test_f
     model_paths.output_model_file = output_model_f
     model_paths.output_model_weights = output_model_w
-    model_paths.checkpoint_outer_path = checkpoint_p_outer
+    model_paths.checkpoint_path = checkpoint_p
     model_paths.checkpoint_overall_path = checkpoint_p_overall
     model_paths.valid_true = val_true
     model_paths.valid_preds = val_preds
