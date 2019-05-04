@@ -22,15 +22,20 @@ def test_default_paths():
     assert(model_paths.checkpoint_overall_path == os.getcwd() + "/data/kaggle/models/best_overall_model.hdf5")
 
     assert(model_paths.conf_matrix == os.getcwd() + "/data/kaggle/eval/conf_matrix.csv")
+    assert(model_paths.other_metrics == os.getcwd() + "/data/kaggle/eval/other_metrics.csv")
 
-    assert(model_paths.valid_true == os.getcwd() + "/data/kaggle/eval/valid_true.csv")
-    assert(model_paths.valid_preds == os.getcwd() + "/data/kaggle/eval/valid_preds.csv")
+    assert(model_paths.valid_true == os.getcwd() + "/data/kaggle/eval/valid/true.csv")
+    assert(model_paths.valid_preds == os.getcwd() + "/data/kaggle/eval/valid/preds.csv")
+
+    assert(model_paths.test_true == os.getcwd() + "/data/kaggle/eval/test/true.csv")
+    assert(model_paths.test_preds == os.getcwd() + "/data/kaggle/eval/test/preds.csv")
 
 
 def test_custom_paths():
     model_paths = models.initialize_custom_paths(test_images_p="asdf", train_images_p="gggg", train_sol='1234', clean_sols='pl', augmented_sols='hello',
                                                  test_f='wswqsas/wdowdw.pt', output_model_f='ssqqas/wdowdw.pt', output_model_w='wwswqa/wdowdw.pt',
-                                                 checkpoint_p_outer='aaaa/aaaa.a', conf_matrix='c.c', checkpoint_p_overall='aaaa/aaab.a', val_true='bb', val_preds='c.c')
+                                                 checkpoint_p_outer='aaaa/aaaa.a', conf_matrix='c.c', other_metrics='a', checkpoint_p_overall='aaaa/aaab.a',
+                                                 val_true='bb', val_preds='c.c', test_true='bb', test_preds='c.c')
     assert(model_paths.test_image_path == "asdf")
     assert(model_paths.train_image_path == "gggg")
     assert(model_paths.test_image_files == [])
@@ -45,8 +50,10 @@ def test_custom_paths():
     assert(model_paths.checkpoint_overall_path == 'aaaa/aaab.a')
     assert(model_paths.valid_true == 'bb')
     assert(model_paths.valid_preds == 'c.c')
+    assert(model_paths.test_true == 'bb')
+    assert(model_paths.test_preds == 'c.c')
     assert(model_paths.conf_matrix == 'c.c')
-
+    assert(model_paths.other_metrics == 'a')
 
 
 if __name__ == '__main__':
