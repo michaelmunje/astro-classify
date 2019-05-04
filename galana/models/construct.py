@@ -113,7 +113,7 @@ def train_model(model_paths, transfer=False):
 
     print("Training model...")
 
-    checkpoint = ModelCheckpoint(model_paths.checkpoint_outer_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     early_stopping = EarlyStopping(monitor='val_loss', patience=2)
     callbacks_list = [checkpoint, early_stopping]
 
@@ -128,10 +128,12 @@ def train_model(model_paths, transfer=False):
     with open(model_paths.output_model_file, "w") as json_file:
         json_file.write(model_json)
 
-    model.save_weights(model_paths.checkpoint_outer_path, overwrite=True)
+    model.save_weights(model_paths.checkpoint_overall_path, overwrite=True)
 
     print("Saved model to: " + model_paths.output_model_file)
     print("Saved weights to: " + model_paths.output_model_weights)
+
+    # to do: abstract below out of file
 
     model = load_model(model_paths.checkpoint_outer_path)
 
