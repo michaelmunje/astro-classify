@@ -25,7 +25,10 @@ def eval_metrics(model_paths):
 
     print(valid_pred)
 
-    # calc_conf_matrix(valid_pred, valid_true)
+    conf_matrix = calc_conf_matrix(valid_pred, valid_true)
 
     print(calc_conf_matrix(valid_pred, valid_true))
 
+    df = pd.DataFrame(conf_matrix, columns=['Spiral', 'Elliptical', 'Irregular', 'Other'])
+
+    df.to_csv(model_paths.conf_matrix, index=False)
