@@ -114,7 +114,7 @@ def train_model(model_paths, transfer=False):
     print("Training model...")
 
     checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=3)
     callbacks_list = [checkpoint, early_stopping]
 
     model.fit_generator(generator=train_generator,
@@ -122,7 +122,7 @@ def train_model(model_paths, transfer=False):
                         validation_data=valid_generator,
                         validation_steps=STEP_SIZE_VALID,
                         callbacks=callbacks_list,
-                        epochs=30)
+                        epochs=100)
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
