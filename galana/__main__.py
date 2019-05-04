@@ -56,9 +56,10 @@ def mine_final_phase():
 def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
     preprocessing.process_kaggle(train_sols, clean_sols)
     preprocessing.update_solutions(clean_sols, augmented_sols)
+    preprocessing.remove_others(train_image_path, clean_sols)
+    preprocessing.crop_all(train_image_path)
     preprocessing.augment_images(train_image_path, clean_sols)
     preprocessing.move_augments(train_image_path)
-    preprocessing.crop_all(train_image_path)
 
 
 def detect_boxes():
