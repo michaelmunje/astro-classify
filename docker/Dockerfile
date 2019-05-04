@@ -29,5 +29,4 @@ RUN apt-get update && \
     apt-get install -y git && \
     apt-get install -y libsm6 libxext6 libxrender-dev && \
     pip uninstall -y keras-preprocessing && \
-    pip install git+https://github.com/keras-team/keras-preprocessing.git && \
-    pip install opencv-python
+    pip install git+https://github.com/keras-team/keras-preprocessing.git
