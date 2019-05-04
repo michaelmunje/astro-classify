@@ -42,7 +42,7 @@ def initialize_default_paths():
     model_paths.output_model_file = os.getcwd() + '/data/kaggle/models/galaxy_classifier_model.json'
     model_paths.output_model_weights = os.getcwd() + '/data/kaggle/models/galaxy_classifier_weights.h5'
 
-    model_paths.checkpoint_path = os.getcwd() + "data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5"
+    model_paths.checkpoint_path = os.getcwd() + "/data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5"
     model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.h5"
 
     model_paths.valid_true = os.getcwd() + "/data/kaggle/eval/valid/true.csv"
