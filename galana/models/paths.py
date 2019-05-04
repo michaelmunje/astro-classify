@@ -34,19 +34,22 @@ def initialize_default_paths():
     model_paths.checkpoint_outer_path = os.getcwd() + "/data/kaggle/models/best_outer_model.hdf5"
     model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.hdf5"
 
-    model_paths.valid_true = os.getcwd() + "/data/kaggle/valid_true.csv"
-    model_paths.valid_preds = os.getcwd() + "/data/kaggle/valid_preds.csv"
+    model_paths.valid_true = os.getcwd() + "/data/kaggle/eval/valid_true.csv"
+    model_paths.valid_preds = os.getcwd() + "/data/kaggle/eval/valid_preds.csv"
+
+    model_paths.conf_matrix = os.getcwd() + "/data/kaggle/eval/conf_matrix.csv"
 
     pl.Path(model_paths.test_image_path).mkdir(parents=True, exist_ok=True)
     pl.Path(model_paths.train_image_path).mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/models/').mkdir(parents=True, exist_ok=True)
     pl.Path(os.getcwd() + '/data/kaggle/solutions/').mkdir(parents=True, exist_ok=True)
+    pl.Path(os.getcwd() + '/data/kaggle/eval/').mkdir(parents=True, exist_ok=True)
 
     return model_paths
 
 
 def initialize_custom_paths(test_images_p, train_images_p, train_sol, clean_sols, augmented_sols,
-                            test_f, output_model_f, output_model_w, checkpoint_p_outer, checkpoint_p_overall, val_true, val_preds):
+                            test_f, output_model_f, output_model_w, checkpoint_p_outer, checkpoint_p_overall, conf_matrix, val_true, val_preds):
     model_paths = ModelPaths()
     model_paths.test_image_path = test_images_p
     model_paths.train_image_path = train_images_p
@@ -71,4 +74,5 @@ def initialize_custom_paths(test_images_p, train_images_p, train_sol, clean_sols
     model_paths.checkpoint_overall_path = checkpoint_p_overall
     model_paths.valid_true = val_true
     model_paths.valid_preds = val_preds
+    model_paths.conf_matrix = conf_matrix
     return model_paths
