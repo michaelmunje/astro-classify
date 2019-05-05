@@ -5,12 +5,9 @@ import pandas as pd
 def calc_conf_matrix(y_pred, y_actual):
     conf_matrix = np.zeros((3, 3), dtype=np.int8)
 
-    print(conf_matrix)
-
     for pred_row, actual_col in zip(y_pred, y_actual):
         conf_matrix[pred_row, actual_col] += 1
-
-    print(conf_matrix)
+        print(conf_matrix)
 
     return conf_matrix
 
