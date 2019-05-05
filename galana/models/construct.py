@@ -123,6 +123,8 @@ def train_model(model_paths, transfer=False):
     #                     validation_steps=STEP_SIZE_VALID,
     #                     callbacks=callbacks_list,
     #                     epochs=100)
+    
+    model = load_model("data/kaggle/models/checkpoints/19-0.87.hdf5")
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
