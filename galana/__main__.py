@@ -53,12 +53,15 @@ def mine_final_phase():
     print("You have finished running the data pipeline. Results are available at: data/results/")
 
 
-def manip_images(train_image_path, train_sols, clean_sols, augmented_sols):
-    preprocessing.process_kaggle(train_sols, clean_sols)
-    preprocessing.update_solutions(clean_sols, augmented_sols)
-    preprocessing.augment_images(train_image_path, clean_sols)
-    preprocessing.move_augments(train_image_path)
-    preprocessing.crop_all(train_image_path)
+def manip_images(model_paths):
+    preprocessing.process_kaggle(model_paths.all_solutions, model_paths.clean_solutions)
+    preprocessing.remove_others(model_paths.train_image_path, model_paths.clean_solutions)
+    preprocessing.crop_all(model_paths.train_image_path)
+    preprocessing.create_valids(model_paths.train_image_path, model_paths.valid_image_path, model_paths.clean_solutions,
+    model_paths.clean_train_solutions, model_paths.valid_solutions)
+    preprocessing.update_solutions(model_paths.clean_train_solutions, model_paths.augmented_train_solutions)
+    preprocessing.augment_images(model_paths.train_image_path, model_paths.clean_train_solutions)
+    preprocessing.move_augments(model_paths.train_image_path)
 
 
 def detect_boxes():
@@ -73,14 +76,12 @@ if __name__ == '__main__':
         detect_boxes()
 
     if system_arguments == "Manip Data":
-        manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
+        manip_images(model_paths)
 
     elif system_arguments == "Train Model":
         models.train_model(model_paths)
 
     elif system_arguments == "Train Transfer Model":
-        model_paths = models.initialize_default_paths()
-       # manip_images(model_paths.train_image_path, model_paths.train_solutions, model_paths.clean_train_solutions, model_paths.augmented_solutions)
         models.train_model(model_paths, transfer=True)
 
     elif system_arguments == "Evaluate":

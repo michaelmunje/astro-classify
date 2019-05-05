@@ -18,7 +18,7 @@ def construct_transfer_model():
         Dense(1024, activation='relu'),
         Dropout(0.5),
         Dense(512, activation='relu'),
-        Dense(4, activation='softmax')
+        Dense(3, activation='softmax')
     ])
 
     model.compile(loss='categorical_crossentropy',
@@ -41,7 +41,7 @@ def construct_model():
         Flatten(),
         Dense(512, activation='relu'),
         Dropout(0.5),
-        Dense(4, activation='softmax')
+        Dense(3, activation='softmax')
     ])
 
     model.compile(loss='categorical_crossentropy',
@@ -53,36 +53,53 @@ def construct_model():
 
 def train_model(model_paths, transfer=False):
 
-    traindf = pd.read_csv(model_paths.augmented_solutions)
+    print("SETTING UP TRAINING...")
 
-    df_headers = list(traindf.columns)
+    train_df = pd.read_csv(model_paths.augmented_train_solutions)
+    valid_df = pd.read_csv(model_paths.valid_solutions)
+    # test_df = pd.read_csv(model_paths.test_solutions)
 
-    datagen = IDG(rescale=1. / 255., validation_split=0.20)
+    df_headers = list(train_df.columns)
+
+    train_datagen = IDG(rescale=1. / 255., shear_range=0.2, zoom_range=0.2, horizontal_flip=True)
+    valid_datagen = IDG(rescale=1. / 255.)
+    # test_datagen = IDG(rescale=1. / 255.)
 
     # Create generators
-    train_generator = datagen.flow_from_dataframe(
-        dataframe=traindf,
+    train_generator = train_datagen.flow_from_dataframe(
+        dataframe=train_df,
         directory=model_paths.train_image_path,
         x_col=df_headers[0],
         y_col=df_headers[1],
-        subset="training",
+        class_mode='categorical',
+        shuffle=True,
+        batch_size=24,
+        seed=42,
+        target_size=(200, 200))
+
+    valid_generator = valid_datagen.flow_from_dataframe(
+        dataframe=valid_df,
+        directory=model_paths.valid_image_path,
+        x_col=df_headers[0],
+        y_col=df_headers[1],
         class_mode='categorical',
         shuffle=False,
         batch_size=24,
         seed=42,
         target_size=(200, 200))
 
-    valid_generator = datagen.flow_from_dataframe(
-        dataframe=traindf,
-        directory=model_paths.train_image_path,
-        x_col=df_headers[0],
-        y_col=df_headers[1],
-        subset="validation",
-        class_mode='categorical',
-        shuffle=False,
-        batch_size=24,
-        seed=42,
-        target_size=(200, 200))
+    # test_generator = test_datagen.flow_from_dataframe(
+    #     dataframe=test_df,
+    #     directory=model_paths.test_image_path,
+    #     x_col=df_headers[0],
+    #     y_col=df_headers[1],
+    #     class_mode='categorical',
+    #     shuffle=False,
+    #     batch_size=24,
+    #     seed=42,
+    #     target_size=(200, 200))
+
+    print("CLASS INDICES:", train_generator.class_indices)
 
     if transfer:
         model = construct_transfer_model()
@@ -96,27 +113,34 @@ def train_model(model_paths, transfer=False):
 
     print("Training model...")
 
-    checkpoint = ModelCheckpoint(model_paths.checkpoint_outer_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+    checkpoint = ModelCheckpoint(model_paths.checkpoint_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    early_stopping = EarlyStopping(monitor='val_loss', patience=3)
     callbacks_list = [checkpoint, early_stopping]
 
-    model.fit_generator(generator=train_generator,
-                        steps_per_epoch=STEP_SIZE_TRAIN,
-                        validation_data=valid_generator,
-                        validation_steps=STEP_SIZE_VALID,
-                        callbacks=callbacks_list,
-                        epochs=30)
+    # model.fit_generator(generator=train_generator,
+    #                     steps_per_epoch=STEP_SIZE_TRAIN,
+    #                     validation_data=valid_generator,
+    #                     validation_steps=STEP_SIZE_VALID,
+    #                     callbacks=callbacks_list,
+    #                     epochs=100)
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
         json_file.write(model_json)
 
-    model.save_weights(model_paths.checkpoint_outer_path, overwrite=True)
+    model.save_weights(model_paths.checkpoint_overall_path, overwrite=True)
 
     print("Saved model to: " + model_paths.output_model_file)
     print("Saved weights to: " + model_paths.output_model_weights)
 
-    model = load_model(model_paths.checkpoint_outer_path)
+    # to do: abstract below out of file
+
+    # # Model reconstruction from JSON file
+    # with open(model_paths.output_model_file, 'r') as f:
+    #     model = model_from_json(f.read())
+    #
+    # # Load weights into the new model
+    # model.load_weights(model_paths.checkpoint_overall_path)
 
     y_all_preds = model.predict_generator(generator=valid_generator, steps=STEP_SIZE_VALID, use_multiprocessing=True)
 
