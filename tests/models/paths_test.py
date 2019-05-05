@@ -22,7 +22,7 @@ def test_default_paths():
     assert(model_paths.output_model_file == os.getcwd() + '/data/kaggle/models/galaxy_classifier_model.json')
     assert(model_paths.output_model_weights == os.getcwd() + '/data/kaggle/models/galaxy_classifier_weights.h5')
 
-    assert(model_paths.checkpoint_path == os.getcwd() + "data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5")
+    assert(model_paths.checkpoint_path == os.getcwd() + "/data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5")
     assert(model_paths.checkpoint_overall_path == os.getcwd() + "/data/kaggle/models/best_overall_model.h5")
 
     assert(model_paths.conf_matrix == os.getcwd() + "/data/kaggle/eval/conf_matrix.csv")
