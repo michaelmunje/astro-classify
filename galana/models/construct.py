@@ -117,12 +117,12 @@ def train_model(model_paths, transfer=False):
     early_stopping = EarlyStopping(monitor='val_loss', patience=3)
     callbacks_list = [checkpoint, early_stopping]
 
-    model.fit_generator(generator=train_generator,
-                        steps_per_epoch=STEP_SIZE_TRAIN,
-                        validation_data=valid_generator,
-                        validation_steps=STEP_SIZE_VALID,
-                        callbacks=callbacks_list,
-                        epochs=100)
+    # model.fit_generator(generator=train_generator,
+    #                     steps_per_epoch=STEP_SIZE_TRAIN,
+    #                     validation_data=valid_generator,
+    #                     validation_steps=STEP_SIZE_VALID,
+    #                     callbacks=callbacks_list,
+    #                     epochs=100)
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
@@ -135,7 +135,12 @@ def train_model(model_paths, transfer=False):
 
     # to do: abstract below out of file
 
-    model = load_model(model_paths.checkpoint_outer_path)
+    # Model reconstruction from JSON file
+    with open(model_paths.output_model_file, 'r') as f:
+        model = model_from_json(f.read())
+
+    # Load weights into the new model
+    model.load_weights(model_paths.checkpoint_overall_path)
 
     y_all_preds = model.predict_generator(generator=valid_generator, steps=STEP_SIZE_VALID, use_multiprocessing=True)
 
