@@ -123,8 +123,6 @@ def train_model(model_paths, transfer=False):
     #                     validation_steps=STEP_SIZE_VALID,
     #                     callbacks=callbacks_list,
     #                     epochs=100)
-    
-    model = load_model("data/kaggle/models/checkpoints/19-0.87.hdf5")
 
     model_json = model.to_json()
     with open(model_paths.output_model_file, "w") as json_file:
@@ -137,12 +135,12 @@ def train_model(model_paths, transfer=False):
 
     # to do: abstract below out of file
 
-    # Model reconstruction from JSON file
-    with open(model_paths.output_model_file, 'r') as f:
-        model = model_from_json(f.read())
-
-    # Load weights into the new model
-    model.load_weights(model_paths.checkpoint_overall_path)
+    # # Model reconstruction from JSON file
+    # with open(model_paths.output_model_file, 'r') as f:
+    #     model = model_from_json(f.read())
+    #
+    # # Load weights into the new model
+    # model.load_weights(model_paths.checkpoint_overall_path)
 
     y_all_preds = model.predict_generator(generator=valid_generator, steps=STEP_SIZE_VALID, use_multiprocessing=True)
 
