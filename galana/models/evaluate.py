@@ -21,6 +21,8 @@ def eval_metrics(model_paths):
 
     conf_matrix = calc_conf_matrix(valid_pred, valid_true)
 
+    print(conf_matrix)
+
     classes = ['Elliptical', 'Irregular', 'Spiral']
     df = pd.DataFrame(conf_matrix, columns=[single_class + ' TRUE' for single_class in classes])
     df.insert(0, "", [single_class + ' PRED' for single_class in classes])
