@@ -3,11 +3,10 @@ import pandas as pd
 
 
 def calc_conf_matrix(y_pred, y_actual):
-    conf_matrix = np.zeros((3, 3), dtype=np.int8)
+    conf_matrix = np.zeros((3, 3), dtype=np.int32)
 
     for pred_row, actual_col in zip(y_pred, y_actual):
         conf_matrix[pred_row, actual_col] += 1
-        print(conf_matrix)
 
     return conf_matrix
 
@@ -21,8 +20,6 @@ def eval_metrics(model_paths):
     valid_pred = valid_pred[valid_pred.columns[0]].values
 
     conf_matrix = calc_conf_matrix(valid_pred, valid_true)
-
-    print(conf_matrix)
 
     classes = ['Elliptical', 'Irregular', 'Spiral']
     df = pd.DataFrame(conf_matrix, columns=[single_class + ' TRUE' for single_class in classes])
