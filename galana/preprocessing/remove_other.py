@@ -18,4 +18,4 @@ def remove_others(training_path, clean_train_sols):
 
     print("Other entries deleted: ", num_of_others)
 
-    df.to_csv(clean_train_sols)
+    df.to_csv(clean_train_sols, index=False)
