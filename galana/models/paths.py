@@ -43,7 +43,7 @@ def initialize_default_paths():
     model_paths.output_model_weights = os.getcwd() + '/data/kaggle/models/galaxy_classifier_weights.h5'
 
     model_paths.checkpoint_path = os.getcwd() + "/data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5"
-    model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.h5"
+    model_paths.checkpoint_overall_path = os.getcwd() + "/data/kaggle/models/best_overall_model.hdf5"
 
     model_paths.valid_true = os.getcwd() + "/data/kaggle/eval/valid/true.csv"
     model_paths.valid_preds = os.getcwd() + "/data/kaggle/eval/valid/preds.csv"
@@ -51,8 +51,11 @@ def initialize_default_paths():
     model_paths.test_true = os.getcwd() + "/data/kaggle/eval/test/true.csv"
     model_paths.test_preds = os.getcwd() + "/data/kaggle/eval/test/preds.csv"
 
-    model_paths.conf_matrix = os.getcwd() + "/data/kaggle/eval/conf_matrix.csv"
-    model_paths.other_metrics = os.getcwd() + "/data/kaggle/eval/other_metrics.csv"
+    model_paths.valid_conf_matrix = os.getcwd() + "/data/kaggle/eval/valid_conf_matrix.csv"
+    model_paths.valid_other_metrics = os.getcwd() + "/data/kaggle/eval/valid_other_metrics.csv"
+
+    model_paths.test_conf_matrix = os.getcwd() + "/data/kaggle/eval/test_conf_matrix.csv"
+    model_paths.test_other_metrics = os.getcwd() + "/data/kaggle/eval/test_other_metrics.csv"
 
     pl.Path(model_paths.test_image_path).mkdir(parents=True, exist_ok=True)
     pl.Path(model_paths.train_image_path).mkdir(parents=True, exist_ok=True)
@@ -67,8 +70,8 @@ def initialize_default_paths():
 
 
 def initialize_custom_paths(test_images_p, valid_images_p, train_images_p, train_sol, clean_sols, augmented_sols, valid_sols, test_sols,
-                            test_f, output_model_f, output_model_w, checkpoint_p, checkpoint_p_overall, conf_matrix,
-                            other_metrics, val_true, val_preds, test_preds, test_true):
+                            test_f, output_model_f, output_model_w, checkpoint_p, checkpoint_p_overall, valid_conf_matrix, valid_other_metrics,
+                            test_conf_matrix, test_other_metrics, val_true, val_preds, test_preds, test_true):
     model_paths = ModelPaths()
     model_paths.test_image_path = test_images_p
     model_paths.train_image_path = train_images_p
@@ -104,7 +107,9 @@ def initialize_custom_paths(test_images_p, valid_images_p, train_images_p, train
     model_paths.valid_preds = val_preds
     model_paths.test_true = test_true
     model_paths.test_preds = test_preds
-    model_paths.conf_matrix = conf_matrix
-    model_paths.other_metrics = other_metrics
+    model_paths.valid_conf_matrix = valid_conf_matrix
+    model_paths.valid_other_metrics = valid_other_metrics
+    model_paths.test_conf_matrix = test_conf_matrix
+    model_paths.test_other_metrics = test_other_metrics
 
     return model_paths
