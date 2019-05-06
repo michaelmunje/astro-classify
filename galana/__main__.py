@@ -58,7 +58,7 @@ def manip_images(model_paths):
     preprocessing.remove_others(model_paths.train_image_path, model_paths.clean_solutions)
     preprocessing.crop_all(model_paths.train_image_path)
     preprocessing.create_valids(model_paths.train_image_path, model_paths.valid_image_path, model_paths.clean_solutions,
-    model_paths.clean_train_solutions, model_paths.valid_solutions)
+                                model_paths.clean_train_solutions, model_paths.valid_solutions)
     preprocessing.update_solutions(model_paths.clean_train_solutions, model_paths.augmented_train_solutions)
     preprocessing.augment_images(model_paths.train_image_path, model_paths.clean_train_solutions)
     preprocessing.move_augments(model_paths.train_image_path)
@@ -84,8 +84,9 @@ if __name__ == '__main__':
     elif system_arguments == "Train Transfer Model":
         models.train_model(model_paths, transfer=True)
 
-    elif system_arguments == "Evaluate":
-        models.eval_metrics(model_paths)
+    elif system_arguments == "Predict":
+        models.calculate_predictions(model_paths.valid_solutions, model_paths.valid_image_path, model_paths.valid_true, model_paths.valid_preds, model_paths.checkpoint_overall_path)
+        models.eval_metrics(model_paths.valid_true, model_paths.valid_preds, model_paths.valid_conf_matrix, model_paths.valid_other_metrics)
 
     # elif system_arguments == "Mine":
     #     progress = load_progress(mine_prog_path)
