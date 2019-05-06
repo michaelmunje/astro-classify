@@ -82,9 +82,24 @@ def eval_metrics(true, preds, conf_matrix_path, other_metrics_path):
         accuracy = (true_positives + true_negatives) / (all_positives + all_negatives)
         error_rate = 1 - accuracy
         recall = true_positives / (true_positives + false_negatives)
-        precision = true_positives / all_positives
-        specificity = true_negatives / all_negatives
-        harmonic_mean = (2 * precision * recall) / (precision + recall)
+        if all_positives > 0:
+            precision = true_positives / all_positives
+        elif true_negatives == 0:
+            precision = 0
+        else:
+            precision = np.Inf
+
+        if all_negatives > 0:
+            specificity = true_negatives / all_negatives
+        elif true_negatives == 0:
+            specificity = 0
+        else:
+            specificity = np.Inf
+
+        if precision != np.Inf:
+            harmonic_mean = (2 * precision * recall) / (precision + recall)
+        else:
+            harmonic_mean = 'DNE'
 
         df_metrics.loc[-1] = [classes[i], true_positives, false_positives, false_negatives, true_negatives,
                               accuracy, error_rate, recall, specificity, precision, harmonic_mean]

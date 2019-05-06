@@ -88,6 +88,10 @@ if __name__ == '__main__':
         models.calculate_predictions(model_paths.valid_solutions, model_paths.valid_image_path, model_paths.valid_true, model_paths.valid_preds, model_paths.checkpoint_overall_path)
         models.eval_metrics(model_paths.valid_true, model_paths.valid_preds, model_paths.valid_conf_matrix, model_paths.valid_other_metrics)
 
+    elif system_arguments == "Predict Test":
+        models.calculate_predictions(model_paths.test_solutions, model_paths.test_image_path, model_paths.test_true, model_paths.test_preds, model_paths.checkpoint_overall_path)
+        models.eval_metrics(model_paths.test_true, model_paths.test_preds, model_paths.test_conf_matrix, model_paths.test_other_metrics)
+
     # elif system_arguments == "Mine":
     #     progress = load_progress(mine_prog_path)
     #     if progress is None:
