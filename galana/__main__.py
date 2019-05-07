@@ -70,6 +70,7 @@ def detect_boxes():
 
 if __name__ == '__main__':
     model_paths = models.initialize_default_paths()
+
     system_arguments = ' '.join(sys.argv[1:])
 
     if system_arguments == "aws":
@@ -83,9 +84,13 @@ if __name__ == '__main__':
 
     elif system_arguments == "Train Transfer Model":
         models.train_model(model_paths, transfer=True)
+    elif system_arguments == "Sagemaker":
+        sagemaker_paths = models.initialize_sagemaker_paths()
+        models.train_model(sagemaker_paths, transfer=True)
 
     elif system_arguments == "Evaluate":
         models.eval_metrics(model_paths)
+    
 
     # elif system_arguments == "Mine":
     #     progress = load_progress(mine_prog_path)

@@ -21,8 +21,13 @@ channel_name = 'training'
 training_path = os.path.join(input_path, channel_name)
 
 # default params
+<<<<<<< HEAD
 training_script = '__main__.py'
 default_params = ['Sagemaker']
+=======
+training_script = 'cifar10.py'
+default_params = ['--model-dir', str(model_path)]
+>>>>>>> f3f3ee46b52c3e075717bba58073af4a08e6aca1
 
 
 # Execute your training algorithm.
