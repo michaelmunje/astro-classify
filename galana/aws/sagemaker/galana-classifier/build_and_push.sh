@@ -51,3 +51,6 @@ docker build -t ${image} -f aws/sagemaker/galana-classifier/Dockerfile .
 docker tag ${image} ${fullname}
 
 docker push ${fullname}
+
+echo "Use the following name for your container:"
+echo ${fullname}

@@ -17,6 +17,8 @@ COPY . /opt/ml/code
 
 COPY aws/sagemaker/galana-classifier/train /opt/ml/code
 
+ENV PATH="/opt/ml/code:${PATH}"
+
 WORKDIR /opt/ml/code
 
 
