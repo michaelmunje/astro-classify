@@ -65,6 +65,68 @@ def initialize_default_paths():
 
     return model_paths
 
+def initialize_sagemaker_paths():
+    """
+    Sets up input paths used by AWS sagemaker. Sagemaker mounts
+    input data channels to /opt/ml/input/data/<channel name>.
+    Training output artifacts should be placed in
+    /opt/ml/output/models - this directory is compressed and
+    placed into S3 after the training job finished.
+    """
+    model_paths = ModelPaths()
+    model_paths.test_image_path  = '/opt/ml/input/data/kaggle/images_test_rev1/'
+    model_paths.train_image_path = '/opt/ml/input/data/kaggle/images_training_rev1/'
+    model_paths.valid_image_path = '/opt/ml/input/data/kaggle/valid_images/'
+
+    if os.path.isfile(model_paths.test_image_path):
+        model_paths.test_image_files = os.listdir(model_paths.test_image_path)
+    else:
+        model_paths.test_image_files = []
+
+    if os.path.isfile(model_paths.valid_image_path):
+        model_paths.valid_image_files = os.listdir(model_paths.test_image_path)
+    else:
+        model_paths.valid_image_files = []
+
+    if os.path.isfile(model_paths.train_image_path):
+        model_paths.train_image_files = os.listdir(model_paths.train_image_path)
+    else:
+        model_paths.train_image_files = []
+
+    model_paths.all_solutions = '/opt/ml/input/data/kaggle/training_solutions_rev1.csv'
+    model_paths.clean_solutions = '/opt/ml/input/data/kaggle/solutions/clean_solutions.csv'
+
+    model_paths.clean_train_solutions =  '/opt/ml/input/data/kaggle/solutions/train_clean_solutions.csv'
+    model_paths.augmented_train_solutions = '/opt/ml/input/data/kaggle/solutions/train_augmented_solutions.csv'
+
+    model_paths.valid_solutions = '/opt/ml/input/data/kaggle/solutions/valid_solutions.csv'
+    model_paths.test_solutions = '/opt/ml/input/data/kaggle/solutions/test_solutions.csv'
+
+    model_paths.test_file = '/opt/ml/input/data/kaggle/all_zeros_benchmark.csv'
+
+    model_paths.output_model_file = '/opt/ml/model/galaxy_classifier_model.json'
+    model_paths.output_model_weights = '/opt/ml/model/galaxy_classifier_weights.h5'
+
+    model_paths.checkpoint_path =  "/opt/ml/model/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5"
+    model_paths.checkpoint_overall_path =  "/opt/ml/model/best_overall_model.h5"
+
+    model_paths.valid_true =  "/opt/ml/model/eval/valid/true.csv"
+    model_paths.valid_preds = "/opt/ml/model/eval/valid/preds.csv"
+
+    model_paths.test_true = "/opt/ml/model/eval/valid/true.csv"
+    model_paths.test_preds = "/opt/ml/model/eval/valid/preds.csv"
+
+    model_paths.conf_matrix = "/opt/ml/model/metrics/conf_matrix.csv"
+    model_paths.other_metrics = "/opt/ml/model/metrics/other_metrics.csv"
+
+    pl.Path(model_paths.test_image_path).mkdir(parents=True, exist_ok=True)
+    pl.Path(model_paths.train_image_path).mkdir(parents=True, exist_ok=True)
+    pl.Path(model_paths.valid_image_path).mkdir(parents=True, exist_ok=True)
+    pl.Path( '/opt/ml/model/checkpoints/').mkdir(parents=True, exist_ok=True)
+    pl.Path( '/opt/ml/model/eval/valid/').mkdir(parents=True, exist_ok=True)
+
+    return model_paths
+
 
 def initialize_custom_paths(test_images_p, valid_images_p, train_images_p, train_sol, clean_sols, augmented_sols, valid_sols, test_sols,
                             test_f, output_model_f, output_model_w, checkpoint_p, checkpoint_p_overall, conf_matrix,

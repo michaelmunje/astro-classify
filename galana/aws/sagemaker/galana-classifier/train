@@ -21,8 +21,8 @@ channel_name = 'training'
 training_path = os.path.join(input_path, channel_name)
 
 # default params
-training_script = 'cifar10.py'
-default_params = ['--model-dir', str(model_path)]
+training_script = '__main__.py'
+default_params = ['Sagemaker']
 
 
 # Execute your training algorithm.
@@ -56,12 +56,13 @@ if __name__ == '__main__':
         # Amazon SageMaker makes our specified hyperparameters available within the
         # /opt/ml/input/config/hyperparameters.json.
         # https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo.html#your-algorithms-training-algo-running-container
-        with open(param_path, 'r') as tc:
-            training_params = json.load(tc)
-
+        cmd_args = []
+        if os.path.isfile(param_path):
+            with open(param_path, 'r') as tc:
+                training_params = json.load(tc)
+            cmd_args = _hyperparameters_to_cmd_args(training_params)
+        
         python_executable = sys.executable
-        cmd_args = _hyperparameters_to_cmd_args(training_params)
-
         train_cmd = [python_executable, training_script] + default_params + cmd_args
 
         _run(train_cmd)
@@ -73,10 +74,11 @@ if __name__ == '__main__':
         # Write out an error file. This will be returned as the failureReason in the
         # DescribeTrainingJob result.
         trc = traceback.format_exc()
-        with open(os.path.join(output_path, 'failure'), 'w') as s:
-            s.write('Exception during training: ' + str(e) + '\n' + trc)
         # Printing this causes the exception to be in the training job logs, as well.
         print('Exception during training: ' + str(e) + '\n' + trc, file=sys.stderr)
+        if os.path.isdir(output_path):
+            with open(os.path.join(output_path, 'failure'), 'w') as s:
+                s.write('Exception during training: ' + str(e) + '\n' + trc)
         # A non-zero exit code causes the training job to be marked as Failed.
 sys.exit(255)
 
