@@ -21,11 +21,7 @@ RUN apt-get update && \
     'boto3' \
     $TF && \
     pip install 'jupyter-tensorboard' && \
-    conda install openjdk && \
     conda clean -tipsy && \
-    conda install -c astropy astroquery && \
-    mkdir .astropy && \
-    chmod 667 .astropy && \
     apt-get install -y git && \
     apt-get install -y libsm6 libxext6 libxrender-dev && \
     pip uninstall -y keras-preprocessing && \

@@ -5,37 +5,37 @@ import os
 
 def test_default_paths():
     model_paths = models.initialize_default_paths()
-    assert(model_paths.test_image_path == os.getcwd() + '/data/kaggle/test_images/')
-    assert(model_paths.valid_image_path == os.getcwd() + '/data/kaggle/valid_images/')
-    assert(model_paths.train_image_path == os.getcwd() + '/data/kaggle/images_training_rev1/')
+    assert(model_paths.test_image_path == os.getcwd() + '/data/test_images/')
+    assert(model_paths.valid_image_path == os.getcwd() + '/data/valid_images/')
+    assert(model_paths.train_image_path == os.getcwd() + '/data/images_training_rev1/')
     assert(model_paths.test_image_files == [])
     assert(model_paths.train_image_files == [])
     assert(model_paths.valid_image_files == [])
 
-    assert(model_paths.all_solutions == os.getcwd() + '/data/kaggle/solutions/training_solutions_rev1.csv')
-    assert(model_paths.clean_solutions == os.getcwd() + '/data/kaggle/solutions/clean_solutions.csv')
+    assert(model_paths.all_solutions == os.getcwd() + '/data/solutions/training_solutions_rev1.csv')
+    assert(model_paths.clean_solutions == os.getcwd() + '/data/solutions/clean_solutions.csv')
 
-    assert(model_paths.clean_train_solutions == os.getcwd() + '/data/kaggle/solutions/train_clean_solutions.csv')
-    assert(model_paths.augmented_train_solutions == os.getcwd() + '/data/kaggle/solutions/train_augmented_solutions.csv')
+    assert(model_paths.clean_train_solutions == os.getcwd() + '/data/solutions/train_clean_solutions.csv')
+    assert(model_paths.augmented_train_solutions == os.getcwd() + '/data/solutions/train_augmented_solutions.csv')
 
-    assert(model_paths.test_file == os.getcwd() + '/data/kaggle/all_zeros_benchmark.csv')
-    assert(model_paths.output_model_file == os.getcwd() + '/data/kaggle/models/galaxy_classifier_model.json')
-    assert(model_paths.output_model_weights == os.getcwd() + '/data/kaggle/models/galaxy_classifier_weights.h5')
+    assert(model_paths.test_file == os.getcwd() + '/data/all_zeros_benchmark.csv')
+    assert(model_paths.output_model_file == os.getcwd() + '/data/models/galaxy_classifier_model.json')
+    assert(model_paths.output_model_weights == os.getcwd() + '/data/models/galaxy_classifier_weights.h5')
 
-    assert(model_paths.checkpoint_path == os.getcwd() + "/data/kaggle/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5")
-    assert(model_paths.checkpoint_overall_path == os.getcwd() + "/data/kaggle/models/best_overall_model.hdf5")
+    assert(model_paths.checkpoint_path == os.getcwd() + "/data/models/checkpoints/{epoch:02d}-{val_acc:.2f}.hdf5")
+    assert(model_paths.checkpoint_overall_path == os.getcwd() + "/data/models/best_overall_model.hdf5")
 
-    assert(model_paths.valid_conf_matrix == os.getcwd() + "/data/kaggle/eval/valid_conf_matrix.csv")
-    assert(model_paths.valid_other_metrics == os.getcwd() + "/data/kaggle/eval/valid_other_metrics.csv")
+    assert(model_paths.valid_conf_matrix == os.getcwd() + "/data/eval/valid_conf_matrix.csv")
+    assert(model_paths.valid_other_metrics == os.getcwd() + "/data/eval/valid_other_metrics.csv")
 
-    assert(model_paths.test_conf_matrix == os.getcwd() + "/data/kaggle/eval/test_conf_matrix.csv")
-    assert(model_paths.test_other_metrics == os.getcwd() + "/data/kaggle/eval/test_other_metrics.csv")
+    assert(model_paths.test_conf_matrix == os.getcwd() + "/data/eval/test_conf_matrix.csv")
+    assert(model_paths.test_other_metrics == os.getcwd() + "/data/eval/test_other_metrics.csv")
 
-    assert(model_paths.valid_true == os.getcwd() + "/data/kaggle/eval/valid/true.csv")
-    assert(model_paths.valid_preds == os.getcwd() + "/data/kaggle/eval/valid/preds.csv")
+    assert(model_paths.valid_true == os.getcwd() + "/data/eval/valid/true.csv")
+    assert(model_paths.valid_preds == os.getcwd() + "/data/eval/valid/preds.csv")
 
-    assert(model_paths.test_true == os.getcwd() + "/data/kaggle/eval/test/true.csv")
-    assert(model_paths.test_preds == os.getcwd() + "/data/kaggle/eval/test/preds.csv")
+    assert(model_paths.test_true == os.getcwd() + "/data/eval/test/true.csv")
+    assert(model_paths.test_preds == os.getcwd() + "/data/eval/test/preds.csv")
 
 
 def test_custom_paths():

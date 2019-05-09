@@ -1,7 +1,6 @@
 import pickle
 import os
 import sys
-import xamin
 import preprocessing
 import models
 import aws
@@ -9,8 +8,7 @@ import aws
 
 root_dir = os.getcwd()
 data_dir = os.path.abspath(root_dir + "/data/")
-mine_prog_path = data_dir + "/mine_prog.pickle"
-ml_prog_path = data_dir + "/ml_prog.pickle"
+prog_path = data_dir + "/prog.pickle"
 
 
 def load_progress(pickle_path):
@@ -28,32 +26,7 @@ def save_progress(phase_num, pickle_path):
     pickle_to_export.close()
 
 
-def mine_phase_one_data_retrieval():
-    print("Retrieving all data...")
-    xamin.multi_core_download()
-    save_progress(2, mine_prog_path)
-    mine_phase_two_data_preprocessing()
-
-
-def mine_phase_two_data_preprocessing():
-    print("Cleaning data...")
-    xamin.mc_gz_to_csv()
-    preprocessing.canonicalize_galaxies()
-    save_progress(3, mine_prog_path)
-    mine_phase_three_clustering()
-
-
-def mine_phase_three_clustering():
-    # save_progress(5, mine_prog_path)
-    # mine_final_phase()
-    pass
-
-
-def mine_final_phase():
-    print("You have finished running the data pipeline. Results are available at: data/results/")
-
-
-def manip_images(model_paths):
+def preprocess_data(model_paths):
     preprocessing.process_kaggle(model_paths.all_solutions, model_paths.clean_solutions)
     preprocessing.remove_others(model_paths.train_image_path, model_paths.clean_solutions)
     preprocessing.crop_all(model_paths.train_image_path)
@@ -62,6 +35,12 @@ def manip_images(model_paths):
     preprocessing.update_solutions(model_paths.clean_train_solutions, model_paths.augmented_train_solutions)
     preprocessing.augment_images(model_paths.train_image_path, model_paths.clean_train_solutions)
     preprocessing.move_augments(model_paths.train_image_path)
+
+
+def construct_model(model_paths):
+    models.train_model(model_paths, transfer=True)
+    models.calculate_predictions(model_paths.test_solutions, model_paths.test_image_path, model_paths.test_true, model_paths.test_preds, model_paths.checkpoint_overall_path)
+    models.eval_metrics(model_paths.test_true, model_paths.test_preds, model_paths.test_conf_matrix, model_paths.test_other_metrics)
 
 
 def detect_boxes():
@@ -76,7 +55,7 @@ if __name__ == '__main__':
         detect_boxes()
 
     if system_arguments == "Manip Data":
-        manip_images(model_paths)
+        preprocess_data(model_paths)
 
     elif system_arguments == "Train Model":
         models.train_model(model_paths)
@@ -92,36 +71,17 @@ if __name__ == '__main__':
         models.calculate_predictions(model_paths.test_solutions, model_paths.test_image_path, model_paths.test_true, model_paths.test_preds, model_paths.checkpoint_overall_path)
         models.eval_metrics(model_paths.test_true, model_paths.test_preds, model_paths.test_conf_matrix, model_paths.test_other_metrics)
 
-    # elif system_arguments == "Mine":
-    #     progress = load_progress(mine_prog_path)
-    #     if progress is None:
-    #         mine_phase_one_data_retrieval()
-    #     else:
-    #         num = progress['Progress']
-    #         switcher = {
-    #             1: mine_phase_one_data_retrieval,
-    #             2: mine_phase_two_data_preprocessing(),
-    #             3: mine_phase_three_clustering(),
-    #             4: mine_final_phase
-    #         }
-    #
-    #         current_phase = switcher.get(num, lambda: "Corrupt pickle.")
-    #         current_phase()
+    elif system_arguments == "Run Pipeline":
+        progress = load_progress(prog_path)
+        if progress is None:
+            # ml_phase_one_data_retrieval()
+            pass
+        else:
+            num = progress['Progress']
+            switcher = {
+                1: preprocess_data,
+                2: construct_model
+            }
 
-    # elif system_arguments == "ML":
-    #     progress = load_progress(ml_prog_path)
-    #     if progress is None:
-    #         ml_phase_one_data_retrieval()
-    #     else:
-    #         num = progress['Progress']
-    #         switcher = {
-    #             1: phase_one_data_retrieval,
-    #             2: phase_two_data_cleaning,
-    #             3: phase_three_further_data,
-    #             4: phase_four_logs,
-    #             5: phase_five_get_sdfs,
-    #             7: final_phase
-    #         }
-    #
-    #         current_phase = switcher.get(num, lambda: "Corrupt pickle.")
-    #         current_phase()
+            current_phase = switcher.get(num, lambda: "Corrupt pickle.")
+            current_phase()
